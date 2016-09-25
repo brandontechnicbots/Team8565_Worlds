@@ -63,8 +63,8 @@ public class Meet1_Teleop extends OpMode
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
 
-    // private DcMotor leftMotor = null;
-    // private DcMotor rightMotor = null;
+    DcMotor leftMotor;
+    DcMotor rightMotor;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -73,18 +73,11 @@ public class Meet1_Teleop extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        /* eg: Initialize the hardware variables. Note that the strings used here as parameters
-         * to 'get' must correspond to the names assigned during the robot configuration
-         * step (using the FTC Robot Controller app on the phone).
-         */
-        // leftMotor  = hardwareMap.dcMotor.get("left motor");
-        // rightMotor = hardwareMap.dcMotor.get("right motor");
+        leftMotor  = hardwareMap.dcMotor.get("left");
+        rightMotor = hardwareMap.dcMotor.get("right");
 
-        // eg: Set the drive motor directions:
-        // Reverse the motor that runs backwards when connected directly to the battery
-        // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        //  rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        // telemetry.addData("Status", "Initialized");
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);
     }
 
     /*
@@ -109,9 +102,8 @@ public class Meet1_Teleop extends OpMode
     public void loop() {
         telemetry.addData("Status", "Running: " + runtime.toString());
 
-        // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
-        // leftMotor.setPower(-gamepad1.left_stick_y);
-        // rightMotor.setPower(-gamepad1.right_stick_y);
+        leftMotor.setPower(-gamepad1.left_stick_y);
+        rightMotor.setPower(-gamepad1.right_stick_y);
     }
 
     /*
