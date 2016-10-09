@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@Autonomous(name = "Autonomous", group = "Linear Opmode")
+//@Autonomous(name = "Autonomous", group = "Linear Opmode")
 abstract public class Meet1_Auto extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -27,11 +27,11 @@ abstract public class Meet1_Auto extends LinearOpMode {
 
         leftMotor = hardwareMap.dcMotor.get("left");
         rightMotor = hardwareMap.dcMotor.get("right");
-        beacon = hardwareMap.servo.get("beacon");
+        //beacon = hardwareMap.servo.get("beacon");
         sensorGyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         sensorGyro.calibrate();
-        leftMotor.setDirection(DcMotor.Direction.REVERSE);
-        rightMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftMotor.setDirection(DcMotor.Direction.FORWARD);
+        rightMotor.setDirection(DcMotor.Direction.REVERSE);
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         sensorGyro.calibrate();
@@ -45,7 +45,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         sleep(getDelay()); //do we need delay
 
         //START TUNING HERE!!!
-        encoderGyroDrive(4000, -0.3);
+        /*encoderGyroDrive(4000, -0.3);
         gyroPID(90);
         encoderGyroDrive(3900, -0.3);
         encoderGyroDrive(2000, 0.3);
@@ -53,6 +53,12 @@ abstract public class Meet1_Auto extends LinearOpMode {
         encoderGyroDrive(2000, -0.3);
         gyroPID(90);
         encoderGyroDrive(2000, -0.3);
+    */
+        encoderGyroDrive(700, -0.3);
+        gyroPID(60);
+        encoderGyroDrive(3500, -0.3);
+        gyroPID(-60);
+        encoderGyroDrive(4000, -0.4);
     }
 
     private void encoderGyroDrive(int distance, double power) throws InterruptedException {
@@ -65,6 +71,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         while (Math.abs(rightMotor.getCurrentPosition() - startDistance) < Math.abs(distance) && getRuntime() < Math.abs(distance / 500)) {
             if (!opModeIsActive()) return; //Emergency Kill
             telemetry.addData("Distance", -1 * (startDistance - rightMotor.getCurrentPosition()));
+            telemetry.update();
             double error_degrees = sensorGyro.getIntegratedZValue(); //Compute Error
             double correction = gyroController.findCorrection(error_degrees); //Get Correction
             correction = Range.clip(correction, -0.3, 0.3); //Limit Correction
@@ -77,7 +84,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
     }
 
     private void gyroPID(double deg) throws InterruptedException {
-        gyroController = new PIDController("gyro", 0.0045, 0.0001, 0, 0.8);
+        gyroController = new PIDController("gyro", 0.008, 0.0005, 0, 0.8);
         if (sensorGyro.isCalibrating()) //Bad
             return;
         sensorGyro.resetZAxisIntegrator();
@@ -88,14 +95,16 @@ abstract public class Meet1_Auto extends LinearOpMode {
             if (!opModeIsActive()) return; //Emergency Kill
             double error_degrees = target_angle - sensorGyro.getIntegratedZValue(); //Compute Error
             double motor_output = gyroController.findCorrection(error_degrees); //Get Correction
-            telemetry.addData("Gyro:", String.valueOf(sensorGyro.getIntegratedZValue()));
+            telemetry.addData("Gyro:", error_degrees);
+            telemetry.update();
             motor_output = Range.clip(motor_output, -0.5, 0.5); //Clip motors
-            leftMotor.setPower(-1*motor_output);
+            leftMotor.setPower(-1 * motor_output);
             rightMotor.setPower(motor_output);
-            if (Math.abs(target_angle - sensorGyro.getIntegratedZValue()) < 2)
-                return;
         }
+        stopRobot();
+        return;
     }
+
 
     private void stopRobot() {
         leftMotor.setPower(0);
