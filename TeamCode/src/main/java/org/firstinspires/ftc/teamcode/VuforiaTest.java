@@ -97,6 +97,7 @@ public class VuforiaTest extends LinearOpMode {
      * localization engine.
      */
     VuforiaLocalizer vuforia;
+    //FTCVuforia vuforiaObjectTracker = new FTCVuforia();
 
     @Override public void runOpMode() throws InterruptedException {
         /**
@@ -123,7 +124,8 @@ public class VuforiaTest extends LinearOpMode {
          * {@link Parameters} instance with which you initialize Vuforia.
          */
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
-        parameters.vuforiaLicenseKey = "Ab4NCQD/////AAAAGfhsRbl+cUnFtvii9deNdDZ0+78C1kLIsBuJMzh4ra8mq/cH49xeCbVdfN/XtKywbYcF2MZpPpcnv46dgP5qyWmdLUrPhBylQEo5FuUV0ES0kz5aT8MAzX4d83QtT7pWZdjH3k/5dv98LhVPqPGURvtSyNxyq9NG8Y34E35csrz0y8hCB/TPxxaZX3xu3KNw5Rpmtj0xs1IJhWidxNTeTPBIMi9W2QJY+phhfmogYpGJI/Fhs9oppgaOf22RF3AQ+TV5kgDmutizMK3OHnmfk9SyD4CzzUO1jhqxWIY9pB/5bF3obC0VQ4TbkEqQjH+pebgvmu7s5PiuQhlYWMc9XNf/MTCxmacLQJiAj6M0ycEf";
+        //valid license key
+        parameters.vuforiaLicenseKey = "ASYmU1X/////AAAAGeRbXZz3301OjdKqrFOt4OVPb5SKSng95X7hatnoDNuElPjQYMuihKQH5o9PC1jUJXk8lD12tefsfHj1PDgB6ga2gfL08UI3WL62Fov/j8rDLTMqKqBOP+jljOXhePm0stYgsK2+aSVaOIHmpY84uZHQ4pNExqGfkESerC6Nz1BZvDO/9zumPcCF98CjmcaGBGv4va7Kjd7XEQRBt0p+j+PAa9wYXywulvmqVnWTfh3fGiVWotAhI8jmzdxRAwTcutcl9CIBulmPa8/cGI3dGKXkKiXyR62gkgPOtLriz8lOzxwnyLC5vWPrr1MqbX5TRfrls3IQdQyfvPrtWnqirdtsWQ7m0eTNSC1/J1flxeaW";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
