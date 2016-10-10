@@ -79,8 +79,8 @@ public class Meet1_Teleop extends OpMode
         secondThrottle = Range.clip(secondThrottle, -1, 1);
         secondRightThrottle = Range.clip(secondRightThrottle, -1, 1);
 
-        leftMotor.setPower(throttle);
-        rightMotor.setPower(rightThrottle);
+        leftMotor.setPower(-throttle);
+        rightMotor.setPower(-rightThrottle);
 
     }
 
