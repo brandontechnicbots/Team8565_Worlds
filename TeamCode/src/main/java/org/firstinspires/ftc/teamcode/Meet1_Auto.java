@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -19,6 +20,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
     Servo beacon;
     PIDController gyroController;
     ModernRoboticsI2cGyro sensorGyro;
+    ModernRoboticsAnalogOpticalDistanceSensor lightSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -29,6 +31,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         rightMotor = hardwareMap.dcMotor.get("right");
         //beacon = hardwareMap.servo.get("beacon");
         sensorGyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
+        lightSensor = (ModernRoboticsAnalogOpticalDistanceSensor) hardwareMap.opticalDistanceSensor.get("light");
         sensorGyro.calibrate();
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
