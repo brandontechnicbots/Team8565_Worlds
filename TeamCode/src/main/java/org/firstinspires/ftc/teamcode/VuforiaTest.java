@@ -75,17 +75,17 @@ import java.util.List;
  *
  * @see VuforiaLocalizer
  * @see VuforiaTrackableDefaultListener
- * see  ftc_app/doc/tutorial/FTC_FieldCoordinateSystemDefinition.pdf
- *
+ * see  ftc_app/doc/tutoria
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
+ *l/FTC_FieldCoordinateSystemDefinition.pdf
  *
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
 
-@Autonomous(name="Concept: Vuforia Navigation", group ="Concept")
-@Disabled
+@Autonomous(name="Concept: Vuforia Navigation", group ="Linear Opmode")
+
 public class VuforiaTest extends LinearOpMode {
 
     public static final String TAG = "Vuforia Sample";
