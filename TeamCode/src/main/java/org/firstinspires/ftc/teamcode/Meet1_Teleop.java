@@ -37,10 +37,10 @@ public class Meet1_Teleop extends OpMode
         //HARDWARE MAP
         leftMotor  = hardwareMap.dcMotor.get("left");
         rightMotor = hardwareMap.dcMotor.get("right");
-        //beacon = hardwareMap.servo.get("beacon");
+        beacon = hardwareMap.servo.get("back");
 
-        leftMotor.setDirection(DcMotor.Direction.FORWARD);
-        rightMotor.setDirection(DcMotor.Direction.REVERSE);
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         //SERVO INITIALIZATION
         //beacon.setPosition(0.81);
@@ -53,7 +53,7 @@ public class Meet1_Teleop extends OpMode
 
         driveControl();
         buttonControl();
-        //servoControl(beacon);
+        servoControl(beacon);
     }
 
     @Override

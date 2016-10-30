@@ -12,8 +12,8 @@ public class Meet1_Red0 extends Meet1_Auto {
     }
 
     @Override
-    protected int getRedAlliance() {
-        return 1;
+    protected Boolean getRedAlliance() {
+        return true;
     }
 
 }
