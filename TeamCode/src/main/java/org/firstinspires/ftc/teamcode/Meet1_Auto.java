@@ -20,6 +20,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     DcMotor leftMotor, rightMotor;
+    Servo rightClaw, leftClaw;
     Servo frontServo, backServo;
     PIDController gyroController;
     ModernRoboticsI2cGyro gyroSensor;
@@ -36,11 +37,15 @@ abstract public class Meet1_Auto extends LinearOpMode {
         rightMotor = hardwareMap.dcMotor.get("right");
         frontServo = hardwareMap.servo.get("front");
         backServo = hardwareMap.servo.get("back");
+        rightClaw = hardwareMap.servo.get("rightc");
+        leftClaw = hardwareMap.servo.get("leftc");
         gyroSensor = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         lightSensor = (ModernRoboticsAnalogOpticalDistanceSensor) hardwareMap.opticalDistanceSensor.get("light");
         colorSensor = (ModernRoboticsI2cColorSensor) hardwareMap.colorSensor.get("color");
         frontServo.setPosition(0.1);
         backServo.setPosition(0.1);
+        rightClaw.setPosition(0);
+        leftClaw.setPosition(1);
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -67,9 +72,14 @@ abstract public class Meet1_Auto extends LinearOpMode {
             encoderGyroDrive(500, 0.3);
             gyroPID(30);
             encoderGyroDrive(5000, 0.5);
-            gyroSWT(-30);
+            gyroLeftSWT(-30);
         } else {
-        //ADD BLUE NAVIGATION HERE
+            encoderGyroDrive(500, -0.3);
+            gyroPID(-30);
+            encoderGyroDrive(3800, -0.5);
+            gyroLeftSWT(41);
+            gyroLeftSWT(-5);
+            gyroLeftSWT(-2);
         }
 
 
@@ -105,17 +115,23 @@ abstract public class Meet1_Auto extends LinearOpMode {
             if ((redTotal < blueTotal) ^ getRedAlliance()) { //XOR blue
                 backServo.setPosition(0.8);
                 sleep(400);
-                backServo.setPosition(0.1);
+                frontServo.setPosition(0.1);
             } else {
                 frontServo.setPosition(0.8);
                 sleep(400);
                 backServo.setPosition(0.1);
             }
+            frontServo.setPosition(0.1);
+            backServo.setPosition(0.1);
         }
     }
 
     private void detectSecondLine() throws InterruptedException {
-        encoderGyroDrive(800, 0.3);
+        if (getRedAlliance()) {
+            encoderGyroDrive(800, 0.3);
+        } else {
+            encoderGyroDrive(800, -0.3);
+        }
         while (opModeIsActive()) {
             Log.d("Debug", "Light2:" + Double.toString(lightSensor.getLightDetected()));
             if (getRedAlliance()) {
@@ -176,7 +192,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         return;
     }
 
-    private void gyroSWT(double deg) throws InterruptedException {
+    private void gyroLeftSWT(double deg) throws InterruptedException {
         gyroController = new PIDController("gyro", 0.025, 0.0000, 0, 0.8);
         if (gyroSensor.isCalibrating()) //Bad
             return;
@@ -193,6 +209,26 @@ abstract public class Meet1_Auto extends LinearOpMode {
             else if (motor_output < 0) motor_output = Range.clip(motor_output, -1, -0.6);
             leftMotor.setPower(-1 * motor_output);
             //rightMotor.setPower(motor_output);
+        }
+        stopRobot();
+        return;
+    }
+    private void gyroRightSWT(double deg) throws InterruptedException {
+        gyroController = new PIDController("gyro", 0.025, 0.0000, 0, 0.8);
+        if (gyroSensor.isCalibrating()) //Bad
+            return;
+        gyroSensor.resetZAxisIntegrator();
+        double target_angle = gyroSensor.getIntegratedZValue() + deg;//Set goal
+        resetStartTime();//Safety Timer
+
+        while (Math.abs(target_angle - gyroSensor.getIntegratedZValue()) > 2 && getRuntime() < 10) {
+            if (!opModeIsActive()) return; //Emergency Kill
+            double error_degrees = target_angle - gyroSensor.getIntegratedZValue(); //Compute Error
+            double motor_output = gyroController.findCorrection(error_degrees); //Get Correction
+            //Log.d("Debug", Double.toString(motor_output));
+            if (motor_output > 0) motor_output = Range.clip(motor_output, 0.6, 1);
+            else if (motor_output < 0) motor_output = Range.clip(motor_output, -1, -0.6);
+            rightMotor.setPower(motor_output);
         }
         stopRobot();
         return;

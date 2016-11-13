@@ -20,7 +20,8 @@ public class Meet1_Teleop extends OpMode
 
     DcMotor leftMotor;
     DcMotor rightMotor;
-    Servo beacon;
+    DcMotor linear;
+    Servo beacon, leftClaw, rightClaw;
     Float throttle, secondThrottle, secondRightThrottle, rightThrottle;
 
     @Override
@@ -37,7 +38,10 @@ public class Meet1_Teleop extends OpMode
         //HARDWARE MAP
         leftMotor  = hardwareMap.dcMotor.get("left");
         rightMotor = hardwareMap.dcMotor.get("right");
+        linear = hardwareMap.dcMotor.get("linear");
         beacon = hardwareMap.servo.get("back");
+        rightClaw = hardwareMap.servo.get("rightc");
+        leftClaw = hardwareMap.servo.get("leftc");
 
         leftMotor.setDirection(DcMotor.Direction.REVERSE);
         rightMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -85,22 +89,31 @@ public class Meet1_Teleop extends OpMode
     }
 
     public void servoControl(Servo s) {
-        if (gamepad1.x)
+        /*if (gamepad1.x)
             s.setPosition(0.5);
         if (gamepad1.y)
-            s.setPosition(s.getPosition() + 0.01);
+                s.setPosition(s.getPosition() + 0.01);
         else if (gamepad1.a)
             s.setPosition(s.getPosition() - 0.01);
-        telemetry.addData("Servo Pos:", s.getPosition());
+        telemetry.addData("Servo Pos:", s.getPosition());*/
     }
 
-    public void buttonControl(){
-        if (gamepad1.x)
-            beacon.setPosition(0.71);
-        else if (gamepad1.b)
-            beacon.setPosition(0.91);
-        else if (gamepad1.y)
-            beacon.setPosition(0.81);
+    public void buttonControl() {
+        if (gamepad1.x) {
+            leftClaw.setPosition(0.05);
+            rightClaw.setPosition(0.95);
+        } else if (gamepad1.b) {
+            leftClaw.setPosition(1);
+            rightClaw.setPosition(0);
+        }
+        if (gamepad1.right_trigger == 1) {
+            linear.setPower(1);
+        } else if (gamepad1.left_trigger == 1) {
+            linear.setPower(-1);
+        } else {
+            linear.setPower(0);
+        }
+
     }
 
     private void stopRobot() {
