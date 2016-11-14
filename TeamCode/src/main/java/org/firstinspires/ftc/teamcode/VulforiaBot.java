@@ -5,36 +5,44 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 /**
  * Created by Jerry on 11/5/2016.
  */
 
-@TeleOp(name = "ShootingTesting", group = "Iterative Opmode")
+@TeleOp(name = "VulforiaBot", group = "Iterative Opmode")
 
-public class ShootingTesting extends OpMode{
+public class VulforiaBot extends OpMode{
 
     DcMotor leftMotor;
     DcMotor rightMotor;
-//    DcMotor shootMotor;
-Float throttle, secondThrottle, secondRightThrottle, rightThrottle;
-//    String shooter = "off";
+    DcMotor shootMotor;
+    Float throttle, secondThrottle, secondRightThrottle, rightThrottle;
+    String shooter = "off";
+    Servo climbers;
 
 
     @Override
     public void init() {
+
         //HARDWARE MAP
         leftMotor  = hardwareMap.dcMotor.get("left");
         rightMotor = hardwareMap.dcMotor.get("right");
-//        shootMotor = hardwareMap.dcMotor.get("shoot");
+        shootMotor = hardwareMap.dcMotor.get("shootMotor");
+        climbers = hardwareMap.servo.get("climbers");
 
+        shootMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftMotor.setDirection(DcMotor.Direction.FORWARD);
+        rightMotor.setDirection(DcMotor.Direction.REVERSE);
     }
 
     @Override
     public void loop() {
 
-//Driving and Joystick controls
+        //Driving and Joystick controls
         throttle = -1 * gamepad1.left_stick_y;
         rightThrottle = -1 * gamepad1.right_stick_y;
         secondThrottle = -1 * gamepad2.left_stick_y;
@@ -55,19 +63,27 @@ Float throttle, secondThrottle, secondRightThrottle, rightThrottle;
         leftMotor.setPower(-throttle);
         rightMotor.setPower(-rightThrottle);
 
-/*      if (gamepad1.x) {
-            shootMotor.setPower(0.5);
+        //Climber
+        if (gamepad1.y)
+            climbers.setPosition(1);
+        else if (gamepad1.a)
+            climbers.setPosition(0.55);
+
+        //Shooter code
+        if (gamepad1.left_trigger ==1) {
+            shootMotor.setPower(1);
             shooter = "on";
 
         }
-        if (gamepad1.y) {
+        if (gamepad1.right_trigger ==1) {
             shootMotor.setPower(0.0);
             shooter = "off";
-        }*/
+        }
 
-//        telemetry.addData("Status", "Position: " + shooter);
+        //Telemetry
+        telemetry.addData("Status", "Position: " + shooter);
         telemetry.addData("leftStickY", "Position: " + throttle);
-        telemetry.addData("rightStickY", "Position: " + secondThrottle);
+        telemetry.addData("rightStickY", "Position: " + rightThrottle);
 
 
     }
