@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.Environment;
 import android.util.Log;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
@@ -15,17 +16,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Date;
+
 //@Autonomous(name = "Autonomous", group = "Linear Opmode")
 abstract public class Meet1_Auto extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     DcMotor leftMotor, rightMotor;
     Servo rightClaw, leftClaw;
-    Servo frontServo, backServo;
+    Servo frontServo, backServo, slideServo;
     PIDController gyroController;
     ModernRoboticsI2cGyro gyroSensor;
     ModernRoboticsAnalogOpticalDistanceSensor lightSensor;
     ModernRoboticsI2cColorSensor colorSensor;
+    Double lineThreshold;
 
 
     @Override
@@ -39,18 +47,22 @@ abstract public class Meet1_Auto extends LinearOpMode {
         backServo = hardwareMap.servo.get("back");
         rightClaw = hardwareMap.servo.get("rightc");
         leftClaw = hardwareMap.servo.get("leftc");
+        slideServo = hardwareMap.servo.get("slide");
         gyroSensor = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         lightSensor = (ModernRoboticsAnalogOpticalDistanceSensor) hardwareMap.opticalDistanceSensor.get("light");
         colorSensor = (ModernRoboticsI2cColorSensor) hardwareMap.colorSensor.get("color");
         frontServo.setPosition(0.1);
         backServo.setPosition(0.1);
-        rightClaw.setPosition(0);
-        leftClaw.setPosition(1);
+        slideServo.setPosition(1.0);
+        rightClaw.setPosition(0.5);
+        leftClaw.setPosition(0.5);
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         gyroSensor.calibrate();
+
+        loadCalibration();
 
         waitForStart();
         runtime.reset();
@@ -68,10 +80,10 @@ abstract public class Meet1_Auto extends LinearOpMode {
     }
 
     private void navigateToBeacon() throws InterruptedException {
-        if (getRedAlliance() == true) {
+        if (getRedAlliance()) {
             encoderGyroDrive(500, 0.3);
             gyroPID(30);
-            encoderGyroDrive(5000, 0.5);
+            encoderGyroDrive(3800, 0.5);
             gyroLeftSWT(-30);
         } else {
             encoderGyroDrive(500, -0.3);
@@ -81,13 +93,11 @@ abstract public class Meet1_Auto extends LinearOpMode {
             gyroLeftSWT(-5);
             gyroLeftSWT(-2);
         }
-
-
     }
 
     private void detectLine() throws InterruptedException {
         while (opModeIsActive()) {
-            Log.d("Debug", "Light1:" + Double.toString(lightSensor.getLightDetected()));
+            //Log.d("Debug", "Light1:" + Double.toString(lightSensor.getLightDetected()));
             if (getRedAlliance()) {
                 leftMotor.setPower(-0.17);
                 rightMotor.setPower(-0.22);
@@ -95,7 +105,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
                 leftMotor.setPower(0.2);
                 rightMotor.setPower(0.2);
             }
-            if (lightSensor.getLightDetected() > 0.15) {
+            if (lightSensor.getLightDetected() > lineThreshold) {
                 stopRobot();
                 break;
             }
@@ -133,7 +143,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
             encoderGyroDrive(800, -0.3);
         }
         while (opModeIsActive()) {
-            Log.d("Debug", "Light2:" + Double.toString(lightSensor.getLightDetected()));
+            //Log.d("Debug", "Light2:" + Double.toString(lightSensor.getLightDetected()));
             if (getRedAlliance()) {
                 leftMotor.setPower(0.15);
                 rightMotor.setPower(0.23);
@@ -141,7 +151,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
                 leftMotor.setPower(-0.2);
                 rightMotor.setPower(-0.2);
             }
-            if (lightSensor.getLightDetected() > 0.14) {
+            if (lightSensor.getLightDetected() > lineThreshold) {
                 stopRobot();
                 break;
             }
@@ -213,6 +223,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         stopRobot();
         return;
     }
+
     private void gyroRightSWT(double deg) throws InterruptedException {
         gyroController = new PIDController("gyro", 0.025, 0.0000, 0, 0.8);
         if (gyroSensor.isCalibrating()) //Bad
@@ -232,6 +243,26 @@ abstract public class Meet1_Auto extends LinearOpMode {
         }
         stopRobot();
         return;
+    }
+
+    private void loadCalibration() {
+        //load calibration values
+        double WHITEVALUE = 0;
+        double BLACKVALUE = 0;
+        try {
+            File file = new File(Environment.getExternalStorageDirectory().getPath()+"/FIRST/calibration.txt");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String date = br.readLine();
+            WHITEVALUE = Double.parseDouble(br.readLine());
+            BLACKVALUE = Double.parseDouble(br.readLine());
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+         lineThreshold = 0.6 * BLACKVALUE + 0.4 * WHITEVALUE;
     }
 
     private void stopRobot() {

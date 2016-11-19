@@ -13,15 +13,14 @@ import com.qualcomm.robotcore.util.Range;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@TeleOp(name="Teleop", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
-public class Meet1_Teleop extends OpMode
-{
+@TeleOp(name = "Teleop", group = "Iterative Opmode")  // @Autonomous(...) is the other common choice
+public class Meet1_Teleop extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     DcMotor leftMotor;
     DcMotor rightMotor;
     DcMotor linear;
-    Servo beacon, leftClaw, rightClaw;
+    Servo frontServo, backServo, leftClaw, rightClaw, slideServo;
     Float throttle, secondThrottle, secondRightThrottle, rightThrottle;
 
     @Override
@@ -36,25 +35,25 @@ public class Meet1_Teleop extends OpMode
     @Override
     public void start() {
         //HARDWARE MAP
-        leftMotor  = hardwareMap.dcMotor.get("left");
+        leftMotor = hardwareMap.dcMotor.get("left");
         rightMotor = hardwareMap.dcMotor.get("right");
         linear = hardwareMap.dcMotor.get("linear");
-        beacon = hardwareMap.servo.get("back");
+        frontServo = hardwareMap.servo.get("front");
+        backServo = hardwareMap.servo.get("back");
+        slideServo = hardwareMap.servo.get("slide");
         rightClaw = hardwareMap.servo.get("rightc");
         leftClaw = hardwareMap.servo.get("leftc");
-public void start() {
-    //HARDWARE MAP
-    leftMotor  = hardwareMap.dcMotor.get("left");
-    rightMotor = hardwareMap.dcMotor.get("right");
-    beacon = hardwareMap.servo.get("back");
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);
 
-    leftMotor.setDirection(DcMotor.Direction.REVERSE);
-    rightMotor.setDirection(DcMotor.Direction.FORWARD);
-
-    //SERVO INITIALIZATION
-    //beacon.setPosition(0.81);
-    runtime.reset();
-}
+        //SERVO INITIALIZATION
+        frontServo.setPosition(0.1);
+        backServo.setPosition(0.1);
+        leftClaw.setPosition(0.5);
+        rightClaw.setPosition(0.492);
+        slideServo.setPosition(0.8);
+        runtime.reset();
+    }
 
     @Override
     public void loop() {
@@ -62,11 +61,11 @@ public void start() {
 
         driveControl();
         buttonControl();
-        servoControl(beacon);
     }
 
     @Override
     public void stop() {
+        //stopRobot();
     }
 
     public void driveControl() {
@@ -97,19 +96,25 @@ public void start() {
         /*if (gamepad1.x)
             s.setPosition(0.5);
         if (gamepad1.y)
-                s.setPosition(s.getPosition() + 0.01);
+            s.setPosition(s.getPosition() + 0.002);
         else if (gamepad1.a)
-            s.setPosition(s.getPosition() - 0.01);
+            s.setPosition(s.getPosition() - 0.002);
         telemetry.addData("Servo Pos:", s.getPosition());*/
     }
 
     public void buttonControl() {
         if (gamepad1.x) {
-            leftClaw.setPosition(0.05);
-            rightClaw.setPosition(0.95);
+            slideServo.setPosition(0.05);
         } else if (gamepad1.b) {
-            leftClaw.setPosition(1);
-            rightClaw.setPosition(0);
+            slideServo.setPosition(0.4);
+        }
+
+        if (gamepad1.y) {
+            leftClaw.setPosition(0.5);
+            rightClaw.setPosition(0.492);
+        } else if (gamepad1.a) {
+            leftClaw.setPosition(0.422);
+            rightClaw.setPosition(0.582);
         }
         if (gamepad1.right_trigger == 1) {
             linear.setPower(1);
