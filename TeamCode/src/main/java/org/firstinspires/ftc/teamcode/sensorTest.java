@@ -21,7 +21,7 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@TeleOp(name = "Sensor Test", group = "Iterative Opmode")
+@TeleOp(name = "Calibration", group = "Iterative Opmode")
 public class sensorTest extends Meet1_Teleop {
     ModernRoboticsAnalogOpticalDistanceSensor lightSensor;
     ModernRoboticsI2cColorSensor colorSensor;

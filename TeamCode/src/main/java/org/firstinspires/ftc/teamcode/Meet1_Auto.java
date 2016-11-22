@@ -6,12 +6,8 @@ import android.util.Log;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -20,7 +16,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Date;
 
 //@Autonomous(name = "Autonomous", group = "Linear Opmode")
 abstract public class Meet1_Auto extends LinearOpMode {
@@ -62,6 +57,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         gyroSensor.calibrate();
 
+
         loadCalibration();
 
         waitForStart();
@@ -77,21 +73,23 @@ abstract public class Meet1_Auto extends LinearOpMode {
         pushBeacon();
         detectSecondLine();
         pushBeacon();
+        endNavigation();
     }
 
     private void navigateToBeacon() throws InterruptedException {
         if (getRedAlliance()) {
-            encoderGyroDrive(500, 0.3);
-            gyroPID(30);
-            encoderGyroDrive(3800, 0.5);
-            gyroLeftSWT(-30);
+            encoderGyroDrive(300, 0.3);
+            gyroTurn(37);
+            encoderGyroDrive(3000, 0.5);
+            gyroTurn(-37,1,0);
+            encoderGyroDrive(1000, 0.5);
+
         } else {
-            encoderGyroDrive(500, -0.3);
-            gyroPID(-30);
-            encoderGyroDrive(3800, -0.5);
-            gyroLeftSWT(41);
-            gyroLeftSWT(-5);
-            gyroLeftSWT(-2);
+            encoderGyroDrive(200, -0.3);
+            gyroTurn(-37);
+            encoderGyroDrive(2950, -0.5);
+            gyroTurn(38, 1, 0); //Left SWT
+            encoderGyroDrive(700, -0.5);
         }
     }
 
@@ -103,7 +101,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
                 rightMotor.setPower(-0.22);
             } else {
                 leftMotor.setPower(0.2);
-                rightMotor.setPower(0.2);
+                rightMotor.setPower(0.17);
             }
             if (lightSensor.getLightDetected() > lineThreshold) {
                 stopRobot();
@@ -158,21 +156,34 @@ abstract public class Meet1_Auto extends LinearOpMode {
         }
     }
 
+    private void endNavigation() throws InterruptedException {
+        if (getRedAlliance()) {
+            gyroTurn(50, 1, 0);
+            encoderGyroDrive(3000,-0.4);
+        } else {
+            gyroTurn(-49, 1, 0);
+            encoderGyroDrive(3000,0.4);
+        }
+    }
+
     private void encoderGyroDrive(int distance, double power) throws InterruptedException {
         gyroController = new PIDController("gyro", 0.03, 0.0, 0, 0.8);
         if (gyroSensor.isCalibrating()) return; //Bad
         gyroSensor.resetZAxisIntegrator();
-        int startDistance = rightMotor.getCurrentPosition();
+        int startDistance = leftMotor.getCurrentPosition();
         resetStartTime();//Safety Timer
 
-        while (Math.abs(rightMotor.getCurrentPosition() - startDistance) < Math.abs(distance) && getRuntime() < Math.abs(distance / 500)) {
+        while (Math.abs(leftMotor.getCurrentPosition() - startDistance) < Math.abs(distance) && getRuntime() < Math.abs(distance / 500) + 1000) {
             if (!opModeIsActive()) return; //Emergency Kill
-            telemetry.addData("Distance", -1 * (startDistance - rightMotor.getCurrentPosition()));
-            telemetry.update();
+            //telemetry.addData("LENCODER", leftMotor.getCurrentPosition());
+            //telemetry.addData("RENCODER", rightMotor.getCurrentPosition());
+            //telemetry.update();
+            //Log.i("DEBUG_Encoder", Double.toString(leftMotor.getCurrentPosition()));
+            //Log.i("DEBUG_Distance", Double.toString(-1 * (startDistance - leftMotor.getCurrentPosition())));
             double error_degrees = gyroSensor.getIntegratedZValue(); //Compute Error
             double correction = gyroController.findCorrection(error_degrees); //Get Correction
             correction = Range.clip(correction, -0.3, 0.3); //Limit Correction
-            //Log.i("Error", String.valueOf(correction));
+            //Log.i("DEBUG_Error", String.valueOf(correction));
             leftMotor.setPower(power + correction);
             rightMotor.setPower(power - correction);
             //log();
@@ -180,7 +191,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         stopRobot();
     }
 
-    private void gyroPID(double deg) throws InterruptedException {
+    private void gyroTurn(double deg, double leftMultiplier, double rightMultiplier) throws InterruptedException {
         gyroController = new PIDController("gyro", 0.025, 0.0000, 0, 0.8);
         if (gyroSensor.isCalibrating()) //Bad
             return;
@@ -192,57 +203,18 @@ abstract public class Meet1_Auto extends LinearOpMode {
             if (!opModeIsActive()) return; //Emergency Kill
             double error_degrees = target_angle - gyroSensor.getIntegratedZValue(); //Compute Error
             double motor_output = gyroController.findCorrection(error_degrees); //Get Correction
-            //Log.d("Debug", Double.toString(motor_output));
             if (motor_output > 0) motor_output = Range.clip(motor_output, 0.6, 1);
             else if (motor_output < 0) motor_output = Range.clip(motor_output, -1, -0.6);
-            leftMotor.setPower(-1 * motor_output);
-            rightMotor.setPower(motor_output);
+            leftMotor.setPower(-1 * motor_output * leftMultiplier);
+            rightMotor.setPower(motor_output * rightMultiplier);
+            Log.d("DEBUG_Gyro", Double.toString(gyroSensor.getIntegratedZValue()));
         }
         stopRobot();
         return;
     }
 
-    private void gyroLeftSWT(double deg) throws InterruptedException {
-        gyroController = new PIDController("gyro", 0.025, 0.0000, 0, 0.8);
-        if (gyroSensor.isCalibrating()) //Bad
-            return;
-        gyroSensor.resetZAxisIntegrator();
-        double target_angle = gyroSensor.getIntegratedZValue() + deg;//Set goal
-        resetStartTime();//Safety Timer
-
-        while (Math.abs(target_angle - gyroSensor.getIntegratedZValue()) > 2 && getRuntime() < 10) {
-            if (!opModeIsActive()) return; //Emergency Kill
-            double error_degrees = target_angle - gyroSensor.getIntegratedZValue(); //Compute Error
-            double motor_output = gyroController.findCorrection(error_degrees); //Get Correction
-            //Log.d("Debug", Double.toString(motor_output));
-            if (motor_output > 0) motor_output = Range.clip(motor_output, 0.6, 1);
-            else if (motor_output < 0) motor_output = Range.clip(motor_output, -1, -0.6);
-            leftMotor.setPower(-1 * motor_output);
-            //rightMotor.setPower(motor_output);
-        }
-        stopRobot();
-        return;
-    }
-
-    private void gyroRightSWT(double deg) throws InterruptedException {
-        gyroController = new PIDController("gyro", 0.025, 0.0000, 0, 0.8);
-        if (gyroSensor.isCalibrating()) //Bad
-            return;
-        gyroSensor.resetZAxisIntegrator();
-        double target_angle = gyroSensor.getIntegratedZValue() + deg;//Set goal
-        resetStartTime();//Safety Timer
-
-        while (Math.abs(target_angle - gyroSensor.getIntegratedZValue()) > 2 && getRuntime() < 10) {
-            if (!opModeIsActive()) return; //Emergency Kill
-            double error_degrees = target_angle - gyroSensor.getIntegratedZValue(); //Compute Error
-            double motor_output = gyroController.findCorrection(error_degrees); //Get Correction
-            //Log.d("Debug", Double.toString(motor_output));
-            if (motor_output > 0) motor_output = Range.clip(motor_output, 0.6, 1);
-            else if (motor_output < 0) motor_output = Range.clip(motor_output, -1, -0.6);
-            rightMotor.setPower(motor_output);
-        }
-        stopRobot();
-        return;
+    private void gyroTurn(double deg) throws InterruptedException {
+        gyroTurn(deg, 1, 1);
     }
 
     private void loadCalibration() {
@@ -250,7 +222,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         double WHITEVALUE = 0;
         double BLACKVALUE = 0;
         try {
-            File file = new File(Environment.getExternalStorageDirectory().getPath()+"/FIRST/calibration.txt");
+            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/FIRST/calibration.txt");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String date = br.readLine();
             WHITEVALUE = Double.parseDouble(br.readLine());
@@ -262,7 +234,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
             e.printStackTrace();
         }
 
-         lineThreshold = 0.6 * BLACKVALUE + 0.4 * WHITEVALUE;
+        lineThreshold = 0.6 * BLACKVALUE + 0.4 * WHITEVALUE;
     }
 
     private void stopRobot() {
