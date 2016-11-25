@@ -44,7 +44,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 public class TestInfiniteLoopLinear extends LinearOpMode {
 
     @Override public void runOpMode() throws InterruptedException {
-
+/*
         waitForStart();
 
         // Do nothing, forever
@@ -56,6 +56,6 @@ public class TestInfiniteLoopLinear extends LinearOpMode {
             } catch (InterruptedException e) {
                 // ignore: we're trying to do an infinite loop!
             }
-        }
+        }*/
     }
 }

@@ -13,9 +13,9 @@ import com.qualcomm.robotcore.util.Range;
  * Created by Jerry on 11/5/2016.
  */
 
-@TeleOp(name = "VulforiaBot", group = "Iterative Opmode")
+@TeleOp(name = "VuforiaBot", group = "Iterative Opmode")
 
-public class VulforiaBot extends OpMode{
+public class VuforiaBot extends OpMode{
 
     DcMotor leftMotor;
     DcMotor rightMotor;

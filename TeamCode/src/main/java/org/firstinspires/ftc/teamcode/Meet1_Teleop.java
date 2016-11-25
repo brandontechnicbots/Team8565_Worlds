@@ -16,15 +16,13 @@ import java.util.Date;
 @TeleOp(name = "Teleop", group = "Iterative Opmode")  // @Autonomous(...) is the other common choice
 public class Meet1_Teleop extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
+    MainRobot robot = new MainRobot();   // Get Robot Config. HINT TO SAMUEL: Edit robot config in the MainRobot file.
 
-    DcMotor leftMotor;
-    DcMotor rightMotor;
-    DcMotor linear;
-    Servo frontServo, backServo, leftClaw, rightClaw, slideServo;
     Float throttle, secondThrottle, secondRightThrottle, rightThrottle;
 
     @Override
     public void init() {
+        robot.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
     }
 
@@ -34,38 +32,18 @@ public class Meet1_Teleop extends OpMode {
 
     @Override
     public void start() {
-        //HARDWARE MAP
-        leftMotor = hardwareMap.dcMotor.get("left");
-        rightMotor = hardwareMap.dcMotor.get("right");
-        linear = hardwareMap.dcMotor.get("linear");
-        frontServo = hardwareMap.servo.get("front");
-        backServo = hardwareMap.servo.get("back");
-        slideServo = hardwareMap.servo.get("slide");
-        rightClaw = hardwareMap.servo.get("rightc");
-        leftClaw = hardwareMap.servo.get("leftc");
-        leftMotor.setDirection(DcMotor.Direction.REVERSE);
-        rightMotor.setDirection(DcMotor.Direction.FORWARD);
-
-        //SERVO INITIALIZATION
-        frontServo.setPosition(0.1);
-        backServo.setPosition(0.1);
-        leftClaw.setPosition(0.5);
-        rightClaw.setPosition(0.492);
-        slideServo.setPosition(0.8);
-        runtime.reset();
+    runtime.reset();
     }
 
     @Override
     public void loop() {
-        telemetry.addData("Status", "Running: " + runtime.toString());
-
         driveControl();
         buttonControl();
+        telemetry.addData("Status", "Running: " + runtime.toString());
     }
 
     @Override
     public void stop() {
-        //stopRobot();
     }
 
     public void driveControl() {
@@ -87,47 +65,43 @@ public class Meet1_Teleop extends OpMode {
         secondThrottle = Range.clip(secondThrottle, -1, 1);
         secondRightThrottle = Range.clip(secondRightThrottle, -1, 1);
 
-        leftMotor.setPower(-throttle);
-        rightMotor.setPower(-rightThrottle);
+        robot.leftMotor.setPower(-throttle);
+        robot.rightMotor.setPower(-rightThrottle);
 
     }
 
     public void servoControl(Servo s) {
-        /*if (gamepad1.x)
+        if (gamepad1.x)
             s.setPosition(0.5);
         if (gamepad1.y)
-            s.setPosition(s.getPosition() + 0.002);
+            s.setPosition(Range.clip(s.getPosition() + 0.002, 0, 1));
         else if (gamepad1.a)
-            s.setPosition(s.getPosition() - 0.002);
-        telemetry.addData("Servo Pos:", s.getPosition());*/
+            s.setPosition(Range.clip(s.getPosition() - 0.002, 0, 1));
+        telemetry.addData("Servo Pos:", s.getPosition());
     }
 
     public void buttonControl() {
         if (gamepad1.x) {
-            slideServo.setPosition(0.05);
+            robot.slideServo.setPosition(0.05);
         } else if (gamepad1.b) {
-            slideServo.setPosition(0.4);
+            robot.slideServo.setPosition(0.4);
         }
 
         if (gamepad1.y) {
-            leftClaw.setPosition(0.5);
-            rightClaw.setPosition(0.492);
+            robot.leftClaw.setPosition(0.5);
+            robot.rightClaw.setPosition(0.492);
         } else if (gamepad1.a) {
-            leftClaw.setPosition(0.422);
-            rightClaw.setPosition(0.582);
+            robot.leftClaw.setPosition(0.422);
+            robot.rightClaw.setPosition(0.582);
         }
         if (gamepad1.right_trigger == 1) {
-            linear.setPower(1);
+            robot.linear.setPower(1);
         } else if (gamepad1.left_trigger == 1) {
-            linear.setPower(-1);
+            robot.linear.setPower(-1);
         } else {
-            linear.setPower(0);
+            robot.linear.setPower(0);
         }
 
     }
 
-    private void stopRobot() {
-        leftMotor.setPower(0);
-        rightMotor.setPower(0);
-    }
 }

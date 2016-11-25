@@ -20,8 +20,8 @@ public class PIDController {
     double Kp = .1;
     double Ki = .01;
     double Kd = 1;
-    double integral = 0.0d;
 
+    double integral = 0.0d;
     double dampen = 0.66;
     double lastError = 0.0d;
 

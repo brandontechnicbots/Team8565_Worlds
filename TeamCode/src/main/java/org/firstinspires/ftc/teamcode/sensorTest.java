@@ -23,34 +23,35 @@ import java.util.Date;
 
 @TeleOp(name = "Calibration", group = "Iterative Opmode")
 public class sensorTest extends Meet1_Teleop {
-    ModernRoboticsAnalogOpticalDistanceSensor lightSensor;
-    ModernRoboticsI2cColorSensor colorSensor;
     double whiteValue, matValue;
 
     @Override
     public void init() {
-        lightSensor = (ModernRoboticsAnalogOpticalDistanceSensor) hardwareMap.opticalDistanceSensor.get("light");
-        colorSensor = (ModernRoboticsI2cColorSensor) hardwareMap.colorSensor.get("color");
+        robot.init(hardwareMap);
+        telemetry.addData("Status", "Initialized");
+        robot.gyroSensor.calibrate();
+
     }
 
     @Override
     public void loop() {
-        driveControl();
-        telemetry.addData("Y=Set White", "A=Set Mat, X=Save to file");
-        telemetry.addData("Color: Red, Blue", colorSensor.red() + " " + colorSensor.blue());
-        telemetry.addData("whiteValue", Double.toString(whiteValue) + ", matValue: " + Double.toString(matValue));
+        if (!robot.gyroSensor.isCalibrating()) {
+            driveControl();
+            telemetry.addData("Y=Set White", "A=Set Mat, X=Save to file");
+            telemetry.addData("Color: Red, Blue", robot.colorSensor.red() + " " + robot.colorSensor.blue() + ", GYRO: " + robot.gyroSensor.getIntegratedZValue());
+            telemetry.addData("whiteValue", Double.toString(whiteValue) + ", matValue: " + Double.toString(matValue));
 
-        if (gamepad1.y) { //White
-            whiteValue = lightSensor.getLightDetected();
-        }
-        if (gamepad1.a) { //Black
-            matValue = lightSensor.getLightDetected();
-        }
-        if (gamepad1.x) { //Save
-            writeCalibration();
+            if (gamepad1.y) { //White
+                whiteValue = robot.lightSensor.getLightDetected();
+            }
+            if (gamepad1.a) { //Black
+                matValue = robot.lightSensor.getLightDetected();
+            }
+            if (gamepad1.x) { //Save
+                writeCalibration();
+            }
         }
     }
-
 
 
     public void writeCalibration() {
