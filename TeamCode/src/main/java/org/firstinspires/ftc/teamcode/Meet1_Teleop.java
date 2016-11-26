@@ -42,7 +42,7 @@ public class Meet1_Teleop extends OpMode
         beacon = hardwareMap.servo.get("back");
         rightClaw = hardwareMap.servo.get("rightc");
         leftClaw = hardwareMap.servo.get("leftc");
-public void start() {
+
     //HARDWARE MAP
     leftMotor  = hardwareMap.dcMotor.get("left");
     rightMotor = hardwareMap.dcMotor.get("right");
