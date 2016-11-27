@@ -18,7 +18,9 @@ public class Meet1_Teleop extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     MainRobot robot = new MainRobot();   // Get Robot Config. HINT TO SAMUEL: Edit robot config in the MainRobot file.
 
-    Float throttle, secondThrottle, secondRightThrottle, rightThrottle;
+    double throttle, secondThrottle, secondRightThrottle, rightThrottle;
+    Boolean slowMode = false;
+    final double SLOWMODEPOWER = 0.2;
 
     @Override
     public void init() {
@@ -39,6 +41,8 @@ public class Meet1_Teleop extends OpMode {
     public void loop() {
         driveControl();
         buttonControl();
+        //servoControl(robot.rightClaw);
+        telemetry.addData("Slow Mode(Hit X)", slowMode);
         telemetry.addData("Status", "Running: " + runtime.toString());
     }
 
@@ -54,10 +58,18 @@ public class Meet1_Teleop extends OpMode {
         secondRightThrottle = -1 * gamepad2.right_stick_y;
 
         //Dead zone
-        throttle = (Math.abs(throttle) < 0.3) ? 0 : throttle;
-        rightThrottle = (Math.abs(rightThrottle) < 0.05) ? 0 : rightThrottle;
-        secondThrottle = (Math.abs(secondThrottle) < 0.3) ? 0 : secondThrottle;
-        secondRightThrottle = (Math.abs(secondRightThrottle) < 0.05) ? 0 : secondRightThrottle;
+        throttle = (Math.abs(throttle) < 0.1) ? 0 : throttle;
+        rightThrottle = (Math.abs(rightThrottle) < 0.1) ? 0 : rightThrottle;
+        secondThrottle = (Math.abs(secondThrottle) < 0.1) ? 0 : secondThrottle;
+        secondRightThrottle = (Math.abs(secondRightThrottle) < 0.1) ? 0 : secondRightThrottle;
+
+        //Slow Mode
+        if (slowMode) {
+            throttle = SLOWMODEPOWER * Math.signum(throttle);
+            rightThrottle = SLOWMODEPOWER * Math.signum(rightThrottle);
+            secondThrottle = SLOWMODEPOWER * Math.signum(secondThrottle);
+            secondRightThrottle = SLOWMODEPOWER * Math.signum(secondRightThrottle);
+        }
 
         //Clip at 1
         throttle = Range.clip(throttle, -1, 1);
@@ -65,9 +77,9 @@ public class Meet1_Teleop extends OpMode {
         secondThrottle = Range.clip(secondThrottle, -1, 1);
         secondRightThrottle = Range.clip(secondRightThrottle, -1, 1);
 
-        robot.leftMotor.setPower(-throttle);
-        robot.rightMotor.setPower(-rightThrottle);
-
+        robot.leftMotor.setPower(throttle);
+        robot.rightMotor.setPower(rightThrottle);
+        telemetry.addData("Throttle(L,R)", robot.leftMotor.getPower() + ", " + robot.rightMotor.getPower());
     }
 
     public void servoControl(Servo s) {
@@ -82,17 +94,17 @@ public class Meet1_Teleop extends OpMode {
 
     public void buttonControl() {
         if (gamepad1.x) {
-            robot.slideServo.setPosition(0.05);
+                slowMode = !slowMode;
         } else if (gamepad1.b) {
-            robot.slideServo.setPosition(0.4);
+            //robot.slideServo.setPosition(0.4);
         }
 
         if (gamepad1.y) {
-            robot.leftClaw.setPosition(0.5);
-            robot.rightClaw.setPosition(0.492);
+            robot.leftClaw.setPosition(0.426);
+            robot.rightClaw.setPosition(0.58);
         } else if (gamepad1.a) {
-            robot.leftClaw.setPosition(0.422);
-            robot.rightClaw.setPosition(0.582);
+            robot.leftClaw.setPosition(0.586);
+            robot.rightClaw.setPosition(0.42);
         }
         if (gamepad1.right_trigger == 1) {
             robot.linear.setPower(1);

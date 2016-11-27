@@ -31,15 +31,17 @@ abstract public class Meet1_Auto extends LinearOpMode {
 
         robot.gyroSensor.calibrate();
 
+        telemetry.addData("Status", "Wait For Start");
+        telemetry.update();
         idle();
         waitForStart();
         runtime.reset();
-        while (robot.gyroSensor.isCalibrating()) sleep(200); //Wait for Gyro to finish calibrating
-        sleep(500);
+        while (robot.gyroSensor.isCalibrating()) robotSleep(200); //Wait for Gyro to finish calibrating
+        robotSleep(500);
 
         telemetry.addData("InDelay", "yes");
         telemetry.update();
-        sleep(getDelay()); //do we need delay
+        robotSleep(getDelay()); //do we need delay
 
         navigateToBeacon();
         detectLine();
@@ -94,11 +96,11 @@ abstract public class Meet1_Auto extends LinearOpMode {
         if (redTotal + blueTotal > 30) { //Only run if with readings
             if ((redTotal < blueTotal) ^ getRedAlliance()) { //XOR blue
                 robot.backServo.setPosition(0.8);
-                sleep(400);
+                robotSleep(400);
                 robot.frontServo.setPosition(0.1);
             } else {
                 robot.frontServo.setPosition(0.8);
-                sleep(400);
+                robotSleep(400);
                 robot.backServo.setPosition(0.1);
             }
             robot.frontServo.setPosition(0.1);
@@ -128,7 +130,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         }
     }
 
-    private void endNavigation()  {
+    private void endNavigation() {
         if (getRedAlliance()) {
             gyroTurn(50, 1, 0);
             encoderGyroDrive(3000, -0.4);
@@ -178,7 +180,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
             else if (motor_output < 0) motor_output = Range.clip(motor_output, -1, -0.6);
             robot.leftMotor.setPower(-1 * motor_output * leftMultiplier);
             robot.rightMotor.setPower(motor_output * rightMultiplier);
-            Log.d("DEBUG_Gyro", Double.toString(robot.gyroSensor.getIntegratedZValue()));
+            //Log.d("DEBUG_Gyro", Double.toString(robot.gyroSensor.getIntegratedZValue()));
         }
         robot.stopRobot();
         return;
@@ -208,6 +210,13 @@ abstract public class Meet1_Auto extends LinearOpMode {
         }
 
         lineThreshold = 0.6 * BLACKVALUE + 0.4 * WHITEVALUE;
+    }
+
+    private void robotSleep(double t) {
+        double rt = getRuntime();
+        while (opModeIsActive()) {
+            if (getRuntime()> rt + t/1000) break;
+        }
     }
 
     abstract protected int getDelay();

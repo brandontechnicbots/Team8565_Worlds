@@ -19,14 +19,39 @@ public class MotorTest extends LinearOpMode {
         telemetry.update();
         robot.gyroSensor.calibrate();
 
+        telemetry.addData("Status", "Wait For Start/Gyro Calibration");
+        telemetry.update();
         waitForStart();
-        while (robot.gyroSensor.isCalibrating()) sleep(200); //Wait for Gyro to finish calibrating
+        while (robot.gyroSensor.isCalibrating())
+            robotSleep(200); //Wait for Gyro to finish calibrating
 
-        encoderGyroDrive(1000, 0.3);
-        encoderGyroDrive(1000, -0.3);
+        telemetry.addData("PHASE 1-Motors/Gyro", "CHECK TELEMETRY");
+        telemetry.update();
+        encoderGyroDrive(500, 0.3);
+        encoderGyroDrive(500, -0.3);
         gyroTurn(-90);
         gyroTurn(180);
         gyroTurn(-90);
+
+        telemetry.addData("PHASE 2-SERVOS", "CHECK TELEMETRY");
+        telemetry.update();
+
+        robot.frontServo.setPosition(0.8);
+        robot.backServo.setPosition(0.8);
+        robot.leftClaw.setPosition(0.586);
+        robot.rightClaw.setPosition(0.42);
+        telemetry.addData("Servos", robot.frontServo.getPosition() + ", " +
+                robot.backServo.getPosition() + ", " +
+                robot.leftClaw.getPosition() + ", " +
+                robot.rightClaw.getPosition());
+        robotSleep(2000);
+
+        robot.frontServo.setPosition(0.1);
+        robot.backServo.setPosition(0.1);
+        robot.leftClaw.setPosition(0.426);
+        robot.rightClaw.setPosition(0.58);
+
+        robotSleep(2000);
 
     }
 
@@ -40,7 +65,8 @@ public class MotorTest extends LinearOpMode {
             if (!opModeIsActive()) return; //Emergency Kill
             //telemetry.addData("LENCODER", robot.leftMotor.getCurrentPosition());
             //telemetry.addData("RENCODER", robot.rightMotor.getCurrentPosition());
-            //telemetry.update();
+            telemetry.addData("Distance(Left Motor)", -1 * (startDistance - robot.leftMotor.getCurrentPosition()));
+            telemetry.update();
             //Log.i("DEBUG_Encoder", Double.toString(robot.leftMotor.getCurrentPosition()));
             //Log.i("DEBUG_Distance", Double.toString(-1 * (startDistance - robot.leftMotor.getCurrentPosition())));
             double error_degrees = robot.gyroSensor.getIntegratedZValue(); //Compute Error
@@ -64,11 +90,12 @@ public class MotorTest extends LinearOpMode {
             if (!opModeIsActive()) return; //Emergency Kill
             double error_degrees = target_angle - robot.gyroSensor.getIntegratedZValue(); //Compute Error
             double motor_output = robot.gyroTurnController.findCorrection(error_degrees); //Get Correction
+            telemetry.addData("Gyro Error", error_degrees);
+            telemetry.update();
             if (motor_output > 0) motor_output = Range.clip(motor_output, 0.6, 1);
             else if (motor_output < 0) motor_output = Range.clip(motor_output, -1, -0.6);
             robot.leftMotor.setPower(-1 * motor_output * leftMultiplier);
             robot.rightMotor.setPower(motor_output * rightMultiplier);
-            Log.d("DEBUG_Gyro", Double.toString(robot.gyroSensor.getIntegratedZValue()));
         }
         robot.stopRobot();
         return;
@@ -76,5 +103,12 @@ public class MotorTest extends LinearOpMode {
 
     private void gyroTurn(double deg) {
         gyroTurn(deg, 1, 1);
+    }
+
+    private void robotSleep(double t) {
+        double rt = getRuntime();
+        while (opModeIsActive()) {
+            if (getRuntime() > rt + t / 1000) break;
+        }
     }
 }

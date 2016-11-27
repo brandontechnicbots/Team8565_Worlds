@@ -6,6 +6,7 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceS
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -13,12 +14,11 @@ import com.qualcomm.robotcore.util.Range;
 
 /**
  * This is NOT an opmode.
- *
+ * <p>
  * This class can be used to define all the specific hardware for a single
  */
 
-public class MainRobot
-{
+public class MainRobot {
     /* Public OpMode members. */
     public DcMotor leftMotor, rightMotor, linear = null;
     public Servo leftClaw, rightClaw = null;
@@ -27,14 +27,14 @@ public class MainRobot
     public ModernRoboticsAnalogOpticalDistanceSensor lightSensor = null;
     public ModernRoboticsI2cColorSensor colorSensor = null;
     public PIDController gyroDriveController = new PIDController("Drive", 0.03, 0.0, 0, 0.8),
-                         gyroTurnController = new PIDController("Turn", 0.025, 0.0000, 0, 0.8);
+            gyroTurnController = new PIDController("Turn", 0.025, 0.0000, 0, 0.8);
 
     /* local OpMode members. */
     HardwareMap hwMap = null;
     private ElapsedTime period = new ElapsedTime();
 
     /* Constructor */
-    public MainRobot(){
+    public MainRobot() {
 
     }
 
@@ -69,12 +69,12 @@ public class MainRobot
         backServo = hwMap.servo.get("back");
         rightClaw = hwMap.servo.get("rightc");
         leftClaw = hwMap.servo.get("leftc");
-        slideServo = hwMap.servo.get("slide");
+        //slideServo = hwMap.servo.get("slide");
         frontServo.setPosition(0.1);
         backServo.setPosition(0.1);
-        slideServo.setPosition(1.0);
-        leftClaw.setPosition(0.5);
-        rightClaw.setPosition(0.492);
+        //slideServo.setPosition(1.0);
+        leftClaw.setPosition(0.426);
+        rightClaw.setPosition(0.58);
 
         //Initialize Sensors
         gyroSensor = (ModernRoboticsI2cGyro) hwMap.gyroSensor.get("gyro");
