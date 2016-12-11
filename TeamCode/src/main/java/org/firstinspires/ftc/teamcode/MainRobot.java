@@ -20,7 +20,7 @@ import com.qualcomm.robotcore.util.Range;
 
 public class MainRobot {
     /* Public OpMode members. */
-    public DcMotor leftMotor, rightMotor, linear = null;
+    public DcMotor leftMotor, rightMotor, linear, shooter = null;
     public Servo leftClaw, rightClaw = null;
     public Servo frontServo, backServo, slideServo = null;
     public ModernRoboticsI2cGyro gyroSensor = null;
@@ -47,22 +47,31 @@ public class MainRobot {
         leftMotor = hwMap.dcMotor.get("left");
         rightMotor = hwMap.dcMotor.get("right");
         linear = hwMap.dcMotor.get("linear");
+        shooter = hwMap.dcMotor.get("shooter");
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
+        linear.setDirection(DcMotor.Direction.FORWARD);
+        shooter.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
+        linear.setPower(0);
+        shooter.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         linear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         //Set Brake Behavior
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        linear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Define and initialize ALL installed servos.
         frontServo = hwMap.servo.get("front");
@@ -73,8 +82,8 @@ public class MainRobot {
         frontServo.setPosition(0.1);
         backServo.setPosition(0.1);
         //slideServo.setPosition(1.0);
-        leftClaw.setPosition(0.426);
-        rightClaw.setPosition(0.58);
+        leftClaw.setPosition(0.327);
+        rightClaw.setPosition(0.515);
 
         //Initialize Sensors
         gyroSensor = (ModernRoboticsI2cGyro) hwMap.gyroSensor.get("gyro");

@@ -36,7 +36,8 @@ abstract public class Meet1_Auto extends LinearOpMode {
         idle();
         waitForStart();
         runtime.reset();
-        while (robot.gyroSensor.isCalibrating()) robotSleep(200); //Wait for Gyro to finish calibrating
+        while (robot.gyroSensor.isCalibrating())
+            robotSleep(200); //Wait for Gyro to finish calibrating
         robotSleep(500);
 
         telemetry.addData("InDelay", "yes");
@@ -46,6 +47,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         navigateToBeacon();
         detectLine();
         pushBeacon();
+        shootBalls();
         detectSecondLine();
         pushBeacon();
         endNavigation();
@@ -53,11 +55,11 @@ abstract public class Meet1_Auto extends LinearOpMode {
 
     private void navigateToBeacon() {
         if (getRedAlliance()) {
-            encoderGyroDrive(300, 0.3);
-            gyroTurn(37);
-            encoderGyroDrive(3000, 0.5);
-            gyroTurn(-36, 1, 0);
-            encoderGyroDrive(950, 0.5);
+            encoderGyroDrive(300, 0.3); //1st go forward
+            gyroTurn(37); //1st turn
+            encoderGyroDrive(3300, 0.5); //2nd go forward
+            gyroTurn(-36, 1, 0); //2nd turn
+            encoderGyroDrive(950, 0.5); //go forward into wall
         } else {
             encoderGyroDrive(200, -0.3);
             gyroTurn(-37);
@@ -108,6 +110,17 @@ abstract public class Meet1_Auto extends LinearOpMode {
         }
     }
 
+    private void shootBalls() {
+        encoderGyroDrive(300, -0.3); //drive backwards
+        robot.shooter.setPower(0.75); //turn on shooter
+        robotSleep(600);
+        robot.shooter.setPower(0);
+        robotSleep(600); //pause between shots
+        robot.shooter.setPower(0.75);
+        robotSleep(600);
+        robot.shooter.setPower(0);
+    }
+
     private void detectSecondLine() {
         if (getRedAlliance()) {
             encoderGyroDrive(800, 0.3);
@@ -128,15 +141,20 @@ abstract public class Meet1_Auto extends LinearOpMode {
                 break;
             }
         }
+        if (getRedAlliance()) {
+            encoderGyroDrive(200, -0.3);
+        } else {
+            encoderGyroDrive(200, 0.3);
+        }
     }
 
     private void endNavigation() {
         if (getRedAlliance()) {
-            gyroTurn(50, 1, 0);
-            encoderGyroDrive(3000, -0.4);
+            gyroTurn(51, 1, 0);
+            encoderGyroDrive(3300, -0.4);
         } else {
             gyroTurn(-49, 1, 0);
-            encoderGyroDrive(3000, 0.4);
+            encoderGyroDrive(3300, 0.4);
         }
     }
 
@@ -215,7 +233,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
     private void robotSleep(double t) {
         double rt = getRuntime();
         while (opModeIsActive()) {
-            if (getRuntime()> rt + t/1000) break;
+            if (getRuntime() > rt + t / 1000) break;
         }
     }
 

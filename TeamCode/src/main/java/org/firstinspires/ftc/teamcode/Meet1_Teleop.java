@@ -20,7 +20,7 @@ public class Meet1_Teleop extends OpMode {
 
     double throttle, secondThrottle, secondRightThrottle, rightThrottle;
     Boolean slowMode = false;
-    final double SLOWMODEPOWER = 0.2;
+    final double SLOWMODEPOWER = 0.6;
 
     @Override
     public void init() {
@@ -90,6 +90,8 @@ public class Meet1_Teleop extends OpMode {
         else if (gamepad1.a)
             s.setPosition(Range.clip(s.getPosition() - 0.002, 0, 1));
         telemetry.addData("Servo Pos:", s.getPosition());
+        telemetry.addData("Instructions:", "X=0.5,Y=+0.002,A=-0.002");
+
     }
 
     public void buttonControl() {
@@ -100,11 +102,11 @@ public class Meet1_Teleop extends OpMode {
         }
 
         if (gamepad1.y) {
-            robot.leftClaw.setPosition(0.426);
-            robot.rightClaw.setPosition(0.58);
+            robot.leftClaw.setPosition(0.327);
+            robot.rightClaw.setPosition(0.515);
         } else if (gamepad1.a) {
-            robot.leftClaw.setPosition(0.586);
-            robot.rightClaw.setPosition(0.42);
+            robot.leftClaw.setPosition(0.4175);
+            robot.rightClaw.setPosition(0.425);
         }
         if (gamepad1.right_trigger == 1) {
             robot.linear.setPower(1);
@@ -112,6 +114,12 @@ public class Meet1_Teleop extends OpMode {
             robot.linear.setPower(-1);
         } else {
             robot.linear.setPower(0);
+        }
+
+        if (gamepad1.dpad_up) {
+            robot.shooter.setPower(0.8);
+        } else {
+            robot.shooter.setPower(0);
         }
 
     }
