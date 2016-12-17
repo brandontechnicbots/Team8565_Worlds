@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -44,6 +46,8 @@ public class Meet1_Teleop extends OpMode {
         //servoControl(robot.rightClaw);
         telemetry.addData("Slow Mode(Hit X)", slowMode);
         telemetry.addData("Status", "Running: " + runtime.toString());
+        telemetry.addData("Controls", "Y-ClawOut,A-ClawIn,DpadU-Shoot");
+
     }
 
     @Override
@@ -101,10 +105,10 @@ public class Meet1_Teleop extends OpMode {
             //robot.slideServo.setPosition(0.4);
         }
 
-        if (gamepad1.y) {
+        if (gamepad1.a) {
             robot.leftClaw.setPosition(0.327);
             robot.rightClaw.setPosition(0.515);
-        } else if (gamepad1.a) {
+        } else if (gamepad1.y) {
             robot.leftClaw.setPosition(0.4175);
             robot.rightClaw.setPosition(0.425);
         }

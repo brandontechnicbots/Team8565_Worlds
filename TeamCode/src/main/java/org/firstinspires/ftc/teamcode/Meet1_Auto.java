@@ -37,7 +37,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         waitForStart();
         runtime.reset();
         while (robot.gyroSensor.isCalibrating())
-            robotSleep(200); //Wait for Gyro to finish calibrating
+            idle(); //Wait for Gyro to finish calibrating
         robotSleep(500);
 
         telemetry.addData("InDelay", "yes");
@@ -63,26 +63,32 @@ abstract public class Meet1_Auto extends LinearOpMode {
         } else {
             encoderGyroDrive(200, -0.3);
             gyroTurn(-37);
-            encoderGyroDrive(2950, -0.5);
-            gyroTurn(38, 1, 0); //Left SWT
+            encoderGyroDrive(3120, -0.5);
+            gyroTurn(39, 1, 0); //Left SWT
             encoderGyroDrive(700, -0.5);
         }
+
     }
 
     private void detectLine() {
         while (opModeIsActive()) {
-            //Log.d("Debug", "Light1:" + Double.toString(lightSensor.getLightDetected()));
+            Log.d("Debug", "Light1:" + Double.toString(robot.lightSensor.getLightDetected()));
             if (getRedAlliance()) {
                 robot.leftMotor.setPower(-0.17);
                 robot.rightMotor.setPower(-0.22);
             } else {
-                robot.leftMotor.setPower(0.2);
+                gyroTurn(2, 0, 1); //Right SWT
+                robot.leftMotor.setPower(0.21);
                 robot.rightMotor.setPower(0.17);
             }
             if (robot.lightSensor.getLightDetected() > lineThreshold) {
                 robot.stopRobot();
                 break;
             }
+        }
+
+        if (!getRedAlliance()) { //Compensation on blue only
+            encoderGyroDrive(100, -0.3);
         }
     }
 
@@ -92,8 +98,8 @@ abstract public class Meet1_Auto extends LinearOpMode {
         for (int i = 0; i < 5000; i++) { //Runs 100 times, tune this
             redTotal += robot.colorSensor.red(); // Add to the values
             blueTotal += robot.colorSensor.blue();
-            //telemetry.addData("Blue, Red",  blueTotal + "," + redTotal);
-            //telemetry.update();
+            telemetry.addData("Blue, Red",  blueTotal + "," + redTotal);
+            telemetry.update();
         }
         if (redTotal + blueTotal > 30) { //Only run if with readings
             if ((redTotal < blueTotal) ^ getRedAlliance()) { //XOR blue
@@ -143,8 +149,6 @@ abstract public class Meet1_Auto extends LinearOpMode {
         }
         if (getRedAlliance()) {
             encoderGyroDrive(200, -0.3);
-        } else {
-            encoderGyroDrive(200, 0.3);
         }
     }
 
@@ -153,7 +157,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
             gyroTurn(51, 1, 0);
             encoderGyroDrive(3300, -0.4);
         } else {
-            gyroTurn(-49, 1, 0);
+            gyroTurn(-51, 1, 0);
             encoderGyroDrive(3300, 0.4);
         }
     }
