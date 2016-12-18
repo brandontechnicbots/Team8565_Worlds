@@ -67,7 +67,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         } else {
             encoderGyroDrive(200, -0.3);
             gyroTurn(-37);
-            encoderGyroDrive(3120, -0.5);
+            encoderGyroDrive(3220, -0.5);
             gyroTurn(39, 1, 0); //Left SWT
             encoderGyroDrive(700, -0.5);
         }

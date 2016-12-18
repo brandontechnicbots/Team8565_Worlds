@@ -105,12 +105,12 @@ public class Meet1_Teleop extends OpMode {
             //robot.slideServo.setPosition(0.4);
         }
 
-        if (gamepad1.a) {
-            robot.leftClaw.setPosition(0.327);
-            robot.rightClaw.setPosition(0.515);
-        } else if (gamepad1.y) {
-            robot.leftClaw.setPosition(0.4175);
-            robot.rightClaw.setPosition(0.425);
+        if (gamepad1.a) { //initial
+            robot.leftClaw.setPosition(0.329);
+            robot.rightClaw.setPosition(0.508);
+        } else if (gamepad1.y) { //closed
+            robot.leftClaw.setPosition(0.420);
+            robot.rightClaw.setPosition(0.4235);
         }
         if (gamepad1.right_trigger == 1) {
             robot.linear.setPower(1);

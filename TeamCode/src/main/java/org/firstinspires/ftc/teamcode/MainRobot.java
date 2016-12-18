@@ -82,8 +82,8 @@ public class MainRobot {
         frontServo.setPosition(0.1);
         backServo.setPosition(0.1);
         //slideServo.setPosition(1.0);
-        leftClaw.setPosition(0.327);
-        rightClaw.setPosition(0.515);
+        leftClaw.setPosition(0.329);
+        rightClaw.setPosition(0.508);
 
         //Initialize Sensors
         gyroSensor = (ModernRoboticsI2cGyro) hwMap.gyroSensor.get("gyro");
