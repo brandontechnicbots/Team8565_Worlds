@@ -32,12 +32,16 @@ abstract public class Meet1_Auto extends LinearOpMode {
         robot.gyroSensor.calibrate();
 
         telemetry.addData("Status", "Wait For Start");
+        telemetry.addData("Line Threshold", lineThreshold + ", Current: " + robot.lightSensor.getLightDetected());
         telemetry.update();
         idle();
         waitForStart();
         runtime.reset();
-        while (robot.gyroSensor.isCalibrating())
-            idle(); //Wait for Gyro to finish calibrating
+        while (opModeIsActive()) { //Quick Hack to prevent errors (hopefully)
+            if (!robot.gyroSensor.isCalibrating()) {
+                break;
+            }
+        }
         robotSleep(500);
 
         telemetry.addData("InDelay", "yes");
@@ -71,16 +75,17 @@ abstract public class Meet1_Auto extends LinearOpMode {
     }
 
     private void detectLine() {
+        if (getRedAlliance()) {
+            robot.leftMotor.setPower(-0.17);
+            robot.rightMotor.setPower(-0.22);
+        } else {
+            gyroTurn(2, 0, 1); //Right SWT
+            robot.leftMotor.setPower(0.15);
+            robot.rightMotor.setPower(0.14);
+        }
         while (opModeIsActive()) {
-            Log.d("Debug", "Light1:" + Double.toString(robot.lightSensor.getLightDetected()));
-            if (getRedAlliance()) {
-                robot.leftMotor.setPower(-0.17);
-                robot.rightMotor.setPower(-0.22);
-            } else {
-                gyroTurn(2, 0, 1); //Right SWT
-                robot.leftMotor.setPower(0.21);
-                robot.rightMotor.setPower(0.17);
-            }
+            telemetry.addData("Light1", robot.lightSensor.getLightDetected());
+            telemetry.update();
             if (robot.lightSensor.getLightDetected() > lineThreshold) {
                 robot.stopRobot();
                 break;
@@ -95,10 +100,12 @@ abstract public class Meet1_Auto extends LinearOpMode {
     private void pushBeacon() {
         int redTotal = 0;
         int blueTotal = 0;
-        for (int i = 0; i < 5000; i++) { //Runs 100 times, tune this
-            redTotal += robot.colorSensor.red(); // Add to the values
-            blueTotal += robot.colorSensor.blue();
-            telemetry.addData("Blue, Red",  blueTotal + "," + redTotal);
+        for (int i = 0; i < 1000; i++) { //Runs 100 times, tune this
+            if (redTotal != 255 && blueTotal != 255) {
+                redTotal += robot.colorSensor.red(); // Add to the values
+                blueTotal += robot.colorSensor.blue();
+            }
+            telemetry.addData("Blue, Red", blueTotal + "," + redTotal);
             telemetry.update();
         }
         if (redTotal + blueTotal > 30) { //Only run if with readings
@@ -106,7 +113,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
                 robot.backServo.setPosition(0.8);
                 robotSleep(400);
                 robot.frontServo.setPosition(0.1);
-            } else {
+            } else if (redTotal != blueTotal) {
                 robot.frontServo.setPosition(0.8);
                 robotSleep(400);
                 robot.backServo.setPosition(0.1);
@@ -133,15 +140,17 @@ abstract public class Meet1_Auto extends LinearOpMode {
         } else {
             encoderGyroDrive(800, -0.3);
         }
+
+        if (getRedAlliance()) {
+            robot.leftMotor.setPower(0.15);
+            robot.rightMotor.setPower(0.23);
+        } else {
+            robot.leftMotor.setPower(-0.2);
+            robot.rightMotor.setPower(-0.2);
+        }
+
         while (opModeIsActive()) {
             //Log.d("Debug", "Light2:" + Double.toString(lightSensor.getLightDetected()));
-            if (getRedAlliance()) {
-                robot.leftMotor.setPower(0.15);
-                robot.rightMotor.setPower(0.23);
-            } else {
-                robot.leftMotor.setPower(-0.2);
-                robot.rightMotor.setPower(-0.2);
-            }
             if (robot.lightSensor.getLightDetected() > lineThreshold) {
                 robot.stopRobot();
                 break;

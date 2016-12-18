@@ -39,7 +39,7 @@ public class sensorTest extends Meet1_Teleop {
             driveControl();
             telemetry.addData("Y=Set White", "A=Set Mat, X=Save to file");
             telemetry.addData("Color: Red, Blue", robot.colorSensor.red() + " " + robot.colorSensor.blue() + ", GYRO: " + robot.gyroSensor.getIntegratedZValue());
-            telemetry.addData("whiteValue", Double.toString(whiteValue) + ", matValue: " + Double.toString(matValue));
+            telemetry.addData("Current ", robot.lightSensor.getLightDetected() + ", whiteValue" + Double.toString(whiteValue) + ", matValue: " + Double.toString(matValue));
             telemetry.addData("Encoders(L,R): ", robot.leftMotor.getCurrentPosition() + " " + robot.rightMotor.getCurrentPosition());
             if (gamepad1.y) { //White
                 whiteValue = robot.lightSensor.getLightDetected();
