@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -13,19 +15,18 @@ import com.qualcomm.robotcore.util.Range;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@TeleOp(name="Teleop", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
-public class Meet1_Teleop extends OpMode
-{
+@TeleOp(name = "Teleop", group = "Iterative Opmode")  // @Autonomous(...) is the other common choice
+public class Meet1_Teleop extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
+    MainRobot robot = new MainRobot();   // Get Robot Config. HINT TO SAMUEL: Edit robot config in the MainRobot file.
 
-    DcMotor leftMotor;
-    DcMotor rightMotor;
-    DcMotor linear;
-    Servo beacon, leftClaw, rightClaw;
-    Float throttle, secondThrottle, secondRightThrottle, rightThrottle;
+    double throttle, secondThrottle, secondRightThrottle, rightThrottle;
+    Boolean slowMode = false;
+    final double SLOWMODEPOWER = 0.6;
 
     @Override
     public void init() {
+        robot.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
     }
 
@@ -35,34 +36,18 @@ public class Meet1_Teleop extends OpMode
 
     @Override
     public void start() {
-        //HARDWARE MAP
-        leftMotor  = hardwareMap.dcMotor.get("left");
-        rightMotor = hardwareMap.dcMotor.get("right");
-        linear = hardwareMap.dcMotor.get("linear");
-        beacon = hardwareMap.servo.get("back");
-        rightClaw = hardwareMap.servo.get("rightc");
-        leftClaw = hardwareMap.servo.get("leftc");
-
-    //HARDWARE MAP
-    leftMotor  = hardwareMap.dcMotor.get("left");
-    rightMotor = hardwareMap.dcMotor.get("right");
-    beacon = hardwareMap.servo.get("back");
-
-    leftMotor.setDirection(DcMotor.Direction.REVERSE);
-    rightMotor.setDirection(DcMotor.Direction.FORWARD);
-
-    //SERVO INITIALIZATION
-    //beacon.setPosition(0.81);
     runtime.reset();
-}
+    }
 
     @Override
     public void loop() {
-        telemetry.addData("Status", "Running: " + runtime.toString());
-
         driveControl();
         buttonControl();
-        servoControl(beacon);
+        //servoControl(robot.rightClaw);
+        telemetry.addData("Slow Mode(Hit X)", slowMode);
+        telemetry.addData("Status", "Running: " + runtime.toString());
+        telemetry.addData("Controls", "Y-ClawOut,A-ClawIn,DpadU-Shoot");
+
     }
 
     @Override
@@ -77,10 +62,18 @@ public class Meet1_Teleop extends OpMode
         secondRightThrottle = -1 * gamepad2.right_stick_y;
 
         //Dead zone
-        throttle = (Math.abs(throttle) < 0.3) ? 0 : throttle;
-        rightThrottle = (Math.abs(rightThrottle) < 0.05) ? 0 : rightThrottle;
-        secondThrottle = (Math.abs(secondThrottle) < 0.3) ? 0 : secondThrottle;
-        secondRightThrottle = (Math.abs(secondRightThrottle) < 0.05) ? 0 : secondRightThrottle;
+        throttle = (Math.abs(throttle) < 0.1) ? 0 : throttle;
+        rightThrottle = (Math.abs(rightThrottle) < 0.1) ? 0 : rightThrottle;
+        secondThrottle = (Math.abs(secondThrottle) < 0.1) ? 0 : secondThrottle;
+        secondRightThrottle = (Math.abs(secondRightThrottle) < 0.1) ? 0 : secondRightThrottle;
+
+        //Slow Mode
+        if (slowMode) {
+            throttle = SLOWMODEPOWER * Math.signum(throttle);
+            rightThrottle = SLOWMODEPOWER * Math.signum(rightThrottle);
+            secondThrottle = SLOWMODEPOWER * Math.signum(secondThrottle);
+            secondRightThrottle = SLOWMODEPOWER * Math.signum(secondRightThrottle);
+        }
 
         //Clip at 1
         throttle = Range.clip(throttle, -1, 1);
@@ -88,41 +81,51 @@ public class Meet1_Teleop extends OpMode
         secondThrottle = Range.clip(secondThrottle, -1, 1);
         secondRightThrottle = Range.clip(secondRightThrottle, -1, 1);
 
-        leftMotor.setPower(-throttle);
-        rightMotor.setPower(-rightThrottle);
-
+        robot.leftMotor.setPower(throttle);
+        robot.rightMotor.setPower(rightThrottle);
+        telemetry.addData("Throttle(L,R)", robot.leftMotor.getPower() + ", " + robot.rightMotor.getPower());
     }
 
     public void servoControl(Servo s) {
-        /*if (gamepad1.x)
+        if (gamepad1.x)
             s.setPosition(0.5);
         if (gamepad1.y)
-                s.setPosition(s.getPosition() + 0.01);
+            s.setPosition(Range.clip(s.getPosition() + 0.002, 0, 1));
         else if (gamepad1.a)
-            s.setPosition(s.getPosition() - 0.01);
-        telemetry.addData("Servo Pos:", s.getPosition());*/
+            s.setPosition(Range.clip(s.getPosition() - 0.002, 0, 1));
+        telemetry.addData("Servo Pos:", s.getPosition());
+        telemetry.addData("Instructions:", "X=0.5,Y=+0.002,A=-0.002");
+
     }
 
     public void buttonControl() {
         if (gamepad1.x) {
-            leftClaw.setPosition(0.05);
-            rightClaw.setPosition(0.95);
+                slowMode = !slowMode;
         } else if (gamepad1.b) {
-            leftClaw.setPosition(1);
-            rightClaw.setPosition(0);
+            //robot.slideServo.setPosition(0.4);
+        }
+
+        if (gamepad1.a) {
+            robot.leftClaw.setPosition(0.327);
+            robot.rightClaw.setPosition(0.515);
+        } else if (gamepad1.y) {
+            robot.leftClaw.setPosition(0.4175);
+            robot.rightClaw.setPosition(0.425);
         }
         if (gamepad1.right_trigger == 1) {
-            linear.setPower(1);
+            robot.linear.setPower(1);
         } else if (gamepad1.left_trigger == 1) {
-            linear.setPower(-1);
+            robot.linear.setPower(-1);
         } else {
-            linear.setPower(0);
+            robot.linear.setPower(0);
+        }
+
+        if (gamepad1.dpad_up) {
+            robot.shooter.setPower(0.8);
+        } else {
+            robot.shooter.setPower(0);
         }
 
     }
 
-    private void stopRobot() {
-        leftMotor.setPower(0);
-        rightMotor.setPower(0);
-    }
 }
