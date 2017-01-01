@@ -14,7 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 //@Autonomous(name = "Autonomous", group = "Linear Opmode")
-abstract public class Meet1_Auto extends LinearOpMode {
+abstract public class Meet1Auto extends LinearOpMode {
 
     MainRobot robot = new MainRobot();   // Get Robot Config. HINT TO SAMUEL: Edit robot config in the MainRobot file.
     private ElapsedTime runtime = new ElapsedTime();
@@ -36,7 +36,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         telemetry.update();
         idle();
         waitForStart();
-        runtime.reset();
+        resetStartTime();
         while (opModeIsActive()) { //Quick Hack to prevent errors (hopefully)
             if (!robot.gyroSensor.isCalibrating()) {
                 break;
@@ -61,15 +61,17 @@ abstract public class Meet1_Auto extends LinearOpMode {
         if (getRedAlliance()) {
             encoderGyroDrive(300, 0.3); //1st go forward
             gyroTurn(37); //1st turn
-            encoderGyroDrive(3300, 0.5); //2nd go forward
-            gyroTurn(-36, 1, 0); //2nd turn
+            encoderGyroDrive(3200, 0.5); //2nd go forward
+            gyroTurn(-29, 1, 0); //2nd turn
             encoderGyroDrive(950, 0.5); //go forward into wall
+            gyroTurn(-7); //3rd turn
         } else {
             encoderGyroDrive(200, -0.3);
-            gyroTurn(-37);
-            encoderGyroDrive(3220, -0.5);
+            gyroTurn(-39);
+            encoderGyroDrive(3450, -0.5);
             gyroTurn(39, 1, 0); //Left SWT
             encoderGyroDrive(700, -0.5);
+            gyroTurn(3); //Right SWT
         }
 
     }
@@ -79,9 +81,8 @@ abstract public class Meet1_Auto extends LinearOpMode {
             robot.leftMotor.setPower(-0.17);
             robot.rightMotor.setPower(-0.22);
         } else {
-            gyroTurn(2, 0, 1); //Right SWT
-            robot.leftMotor.setPower(0.15);
-            robot.rightMotor.setPower(0.14);
+            robot.leftMotor.setPower(0.2);
+            robot.rightMotor.setPower(0.19);
         }
         while (opModeIsActive()) {
             telemetry.addData("Light1", robot.lightSensor.getLightDetected());
@@ -110,25 +111,23 @@ abstract public class Meet1_Auto extends LinearOpMode {
         }
         if (redTotal + blueTotal > 30) { //Only run if with readings
             if ((redTotal < blueTotal) ^ getRedAlliance()) { //XOR blue
-                robot.backServo.setPosition(0.8);
-                robotSleep(400);
-                robot.frontServo.setPosition(0.1);
+                robot.beaconServo.setPosition(.94);
             } else if (redTotal != blueTotal) {
-                robot.frontServo.setPosition(0.8);
-                robotSleep(400);
-                robot.backServo.setPosition(0.1);
+                robot.beaconServo.setPosition(.46);
             }
-            robot.frontServo.setPosition(0.1);
-            robot.backServo.setPosition(0.1);
+            robotSleep(400);
+            robot.beaconServo.setPosition(.7);
         }
     }
 
-    private void shootBalls() {
+    void shootBalls() {
         encoderGyroDrive(300, -0.3); //drive backwards
         robot.shooter.setPower(0.75); //turn on shooter
         robotSleep(600);
         robot.shooter.setPower(0);
-        robotSleep(600); //pause between shots
+        robot.sweeper.setPower(0.9);
+        robotSleep(2000); //pause between shots
+        robot.sweeper.setPower(0);
         robot.shooter.setPower(0.75);
         robotSleep(600);
         robot.shooter.setPower(0);
@@ -145,8 +144,8 @@ abstract public class Meet1_Auto extends LinearOpMode {
             robot.leftMotor.setPower(0.15);
             robot.rightMotor.setPower(0.23);
         } else {
-            robot.leftMotor.setPower(-0.2);
-            robot.rightMotor.setPower(-0.2);
+            robot.leftMotor.setPower(-0.15);
+            robot.rightMotor.setPower(-0.24);
         }
 
         while (opModeIsActive()) {
@@ -155,9 +154,6 @@ abstract public class Meet1_Auto extends LinearOpMode {
                 robot.stopRobot();
                 break;
             }
-        }
-        if (getRedAlliance()) {
-            encoderGyroDrive(200, -0.3);
         }
     }
 
@@ -173,7 +169,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
 
     //Robot Basic Navigation Methods
 
-    private void encoderGyroDrive(int distance, double power) {
+    void encoderGyroDrive(int distance, double power) {
         if (robot.gyroSensor.isCalibrating()) return; //Bad
         robot.gyroSensor.resetZAxisIntegrator();
         int startDistance = robot.leftMotor.getCurrentPosition();
@@ -196,7 +192,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         robot.stopRobot();
     }
 
-    private void gyroTurn(double deg, double leftMultiplier, double rightMultiplier) {
+    void gyroTurn(double deg, double leftMultiplier, double rightMultiplier) {
         if (robot.gyroSensor.isCalibrating()) //Bad
             return;
         robot.gyroSensor.resetZAxisIntegrator();
@@ -217,11 +213,22 @@ abstract public class Meet1_Auto extends LinearOpMode {
         return;
     }
 
-    private void gyroTurn(double deg) {
+    void gyroTurn(double deg) {
         gyroTurn(deg, 1, 1);
     }
 
-    private void loadTapeCalibration() {
+    void insertGamepadBreakpont() {
+        while (true) {
+            telemetry.addData("Hit B to", " continue");
+            telemetry.update();
+            idle();
+            if (gamepad1.b) {
+                break;
+            }
+        }
+    }
+
+    void loadTapeCalibration() {
         //load calibration values
         double WHITEVALUE = 0;
         double BLACKVALUE = 0;
@@ -243,7 +250,7 @@ abstract public class Meet1_Auto extends LinearOpMode {
         lineThreshold = 0.6 * BLACKVALUE + 0.4 * WHITEVALUE;
     }
 
-    private void robotSleep(double t) {
+    void robotSleep(double t) {
         double rt = getRuntime();
         while (opModeIsActive()) {
             if (getRuntime() > rt + t / 1000) break;

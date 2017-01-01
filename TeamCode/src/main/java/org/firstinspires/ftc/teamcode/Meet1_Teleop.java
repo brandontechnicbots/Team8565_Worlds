@@ -52,7 +52,7 @@ public class Meet1_Teleop extends OpMode {
     public void stop() {
     }
 
-    public void driveControl() {
+    void driveControl() {
         //Driving and Joystick controls
         throttle = -1 * gamepad1.left_stick_y;
         rightThrottle = -1 * gamepad1.right_stick_y;
@@ -84,7 +84,7 @@ public class Meet1_Teleop extends OpMode {
         telemetry.addData("Throttle(L,R)", robot.leftMotor.getPower() + ", " + robot.rightMotor.getPower());
     }
 
-    public void newDriveControl() {
+    void newDriveControl() {
         throttle = gamepad1.left_stick_y;
         rightThrottle = gamepad1.right_stick_y;
 
@@ -104,7 +104,7 @@ public class Meet1_Teleop extends OpMode {
         telemetry.addData("Throttle(L,R)", robot.leftMotor.getPower() + ", " + robot.rightMotor.getPower());
     }
 
-    public void buttonControl() {
+    private void buttonControl() {
         joy1.update(gamepad1);
 
         if (gamepad1.x) {
@@ -121,28 +121,49 @@ public class Meet1_Teleop extends OpMode {
             robot.sweeper.setPower(0);
         }
 
-        if (gamepad1.a) { //initial
 
-        } else if (gamepad1.y) { //closed
+
+        if (gamepad1.a)
+
+        { //initial
+
+        } else if (gamepad1.y)
+
+        { //closed
 
         }
-        if (gamepad1.right_trigger == 1) {
+
+        if (gamepad1.right_trigger == 1)
+
+        {
             //robot.linear.setPower(1);
-        } else if (gamepad1.left_trigger == 1) {
+        } else if (gamepad1.left_trigger == 1)
+
+        {
             //robot.linear.setPower(-1);
-        } else {
+        } else
+
+        {
             //robot.linear.setPower(0);
         }
 
-        if (joy1.toggle.right_bumper) {
+        if (joy1.toggle.right_bumper)
+
+        {
             robot.capServo.setPosition(.21);
-        } else {
+        } else
+
+        {
             robot.capServo.setPosition(.42);
         }
 
-        if (gamepad1.dpad_up) {
+        if (gamepad1.dpad_up)
+
+        {
             robot.shooter.setPower(0.8);
-        } else {
+        } else
+
+        {
             robot.shooter.setPower(0);
         }
 

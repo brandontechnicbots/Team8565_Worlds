@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "Blue0", group = "Linear Opmode")
-public class Meet1_Blue0 extends Meet1_Auto {
+@Autonomous(name = "OnlyShoot_BlueCenter", group = "Linear Opmode")
+public class OnlyShootAuto_BlueCenter extends OnlyShootAuto {
     @Override
     protected int getDelay() {
         return 0;
@@ -14,4 +15,6 @@ public class Meet1_Blue0 extends Meet1_Auto {
         return false;
     }
 
+    @Override
+    protected Boolean getShootingEndOnRamp() { return false;}
 }
