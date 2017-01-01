@@ -12,13 +12,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 @TeleOp(name = "Teleop", group = "Iterative Opmode")  // @Autonomous(...) is the other common choice
 public class Meet1_Teleop extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     MainRobot robot = new MainRobot();   // Get Robot Config. HINT TO SAMUEL: Edit robot config in the MainRobot file.
+    GamepadWrapper joy1 = new GamepadWrapper();
 
     double throttle, secondThrottle, secondRightThrottle, rightThrottle;
     Boolean slowMode = false;
@@ -36,12 +34,12 @@ public class Meet1_Teleop extends OpMode {
 
     @Override
     public void start() {
-    runtime.reset();
+        runtime.reset();
     }
 
     @Override
     public void loop() {
-        driveControl();
+        newDriveControl();
         buttonControl();
         //servoControl(robot.rightClaw);
         telemetry.addData("Slow Mode(Hit X)", slowMode);
@@ -54,7 +52,7 @@ public class Meet1_Teleop extends OpMode {
     public void stop() {
     }
 
-    public void driveControl() {
+    void driveControl() {
         //Driving and Joystick controls
         throttle = -1 * gamepad1.left_stick_y;
         rightThrottle = -1 * gamepad1.right_stick_y;
@@ -86,43 +84,86 @@ public class Meet1_Teleop extends OpMode {
         telemetry.addData("Throttle(L,R)", robot.leftMotor.getPower() + ", " + robot.rightMotor.getPower());
     }
 
-    public void servoControl(Servo s) {
-        if (gamepad1.x)
-            s.setPosition(0.5);
-        if (gamepad1.y)
-            s.setPosition(Range.clip(s.getPosition() + 0.002, 0, 1));
-        else if (gamepad1.a)
-            s.setPosition(Range.clip(s.getPosition() - 0.002, 0, 1));
-        telemetry.addData("Servo Pos:", s.getPosition());
-        telemetry.addData("Instructions:", "X=0.5,Y=+0.002,A=-0.002");
+    void newDriveControl() {
+        throttle = gamepad1.left_stick_y;
+        rightThrottle = gamepad1.right_stick_y;
 
+        throttle = -(Math.signum(throttle) * ((Math.pow(throttle, 2) * (1 - .1)) + .1));
+        rightThrottle = -(Math.signum(rightThrottle) * ((Math.pow(rightThrottle, 2) * (1 - .1)) + .1));
+
+        //Dead zone
+        throttle = (Math.abs(throttle) < 0.1) ? 0 : throttle;
+        rightThrottle = (Math.abs(rightThrottle) < 0.1) ? 0 : rightThrottle;
+
+        //Clip at 1
+        throttle = Range.clip(throttle, -1, 1);
+        rightThrottle = Range.clip(rightThrottle, -1, 1);
+
+        robot.leftMotor.setPower(throttle);
+        robot.rightMotor.setPower(rightThrottle);
+        telemetry.addData("Throttle(L,R)", robot.leftMotor.getPower() + ", " + robot.rightMotor.getPower());
     }
 
-    public void buttonControl() {
+    private void buttonControl() {
+        joy1.update(gamepad1);
+
         if (gamepad1.x) {
-                slowMode = !slowMode;
+            robot.beaconServo.setPosition(.46);
         } else if (gamepad1.b) {
-            //robot.slideServo.setPosition(0.4);
+            robot.beaconServo.setPosition(.94);
+        } else if (gamepad1.a) {
+            robot.beaconServo.setPosition(.7);
         }
 
-        if (gamepad1.a) {
-            robot.leftClaw.setPosition(0.327);
-            robot.rightClaw.setPosition(0.515);
-        } else if (gamepad1.y) {
-            robot.leftClaw.setPosition(0.4175);
-            robot.rightClaw.setPosition(0.425);
-        }
-        if (gamepad1.right_trigger == 1) {
-            robot.linear.setPower(1);
-        } else if (gamepad1.left_trigger == 1) {
-            robot.linear.setPower(-1);
+        if (joy1.toggle.y) {
+            robot.sweeper.setPower(0.9);
         } else {
-            robot.linear.setPower(0);
+            robot.sweeper.setPower(0);
         }
 
-        if (gamepad1.dpad_up) {
+
+
+        if (gamepad1.a)
+
+        { //initial
+
+        } else if (gamepad1.y)
+
+        { //closed
+
+        }
+
+        if (gamepad1.right_trigger == 1)
+
+        {
+            //robot.linear.setPower(1);
+        } else if (gamepad1.left_trigger == 1)
+
+        {
+            //robot.linear.setPower(-1);
+        } else
+
+        {
+            //robot.linear.setPower(0);
+        }
+
+        if (joy1.toggle.right_bumper)
+
+        {
+            robot.capServo.setPosition(.21);
+        } else
+
+        {
+            robot.capServo.setPosition(.42);
+        }
+
+        if (gamepad1.dpad_up)
+
+        {
             robot.shooter.setPower(0.8);
-        } else {
+        } else
+
+        {
             robot.shooter.setPower(0);
         }
 
