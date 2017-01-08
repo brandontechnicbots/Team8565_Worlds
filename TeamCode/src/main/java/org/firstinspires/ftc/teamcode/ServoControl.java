@@ -30,7 +30,7 @@ public class ServoControl extends Meet1_Teleop {
 
     @Override
     public void loop() {
-        newDriveControl();
+//        driveControl();
         servoControl(robot.capServo);
         telemetry.addData("Status", "Running: " + runtime.toString());
 
