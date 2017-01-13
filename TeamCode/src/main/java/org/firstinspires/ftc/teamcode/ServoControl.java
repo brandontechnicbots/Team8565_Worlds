@@ -6,12 +6,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "Servo Control", group = "Iterative Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name = "Servo Control", group = "Iterative Opmode")
 public class ServoControl extends Meet1_Teleop {
-    private ElapsedTime runtime = new ElapsedTime();
-    MainRobot robot = new MainRobot();   // Get Robot Config. HINT TO SAMUEL: Edit robot config in the MainRobot file.
-
-    double throttle, secondThrottle, secondRightThrottle, rightThrottle;
 
     @Override
     public void init() {
@@ -25,14 +21,24 @@ public class ServoControl extends Meet1_Teleop {
 
     @Override
     public void start() {
-        runtime.reset();
     }
 
     @Override
     public void loop() {
-//        driveControl();
-        servoControl(robot.capServo);
-        telemetry.addData("Status", "Running: " + runtime.toString());
+        //servoControl(robot.capServo);
+        if (gamepad1.right_trigger == 1) {
+            robot.linear.setPower(1);
+            //robot.leftMotor.setPower(0.2);
+        } else if (gamepad1.left_trigger == 1) {
+            robot.linear.setPower(-1);
+            //robot.leftMotor.setPower(-0.2);
+
+        } else {
+            robot.linear.setPower(0);
+            //robot.leftMotor.setPower(0);
+
+        }
+        newDriveControl();
 
     }
 

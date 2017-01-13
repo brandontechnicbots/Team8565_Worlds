@@ -22,6 +22,7 @@ public class Meet1_Teleop extends OpMode {
     Boolean slowMode = false;
     final double SLOWMODEPOWER = 0.6;
 
+
     @Override
     public void init() {
         robot.init(hardwareMap);
@@ -83,7 +84,7 @@ public class Meet1_Teleop extends OpMode {
         telemetry.addData("Throttle(L,R)", robot.leftMotor.getPower() + ", " + robot.rightMotor.getPower());
     }
 
-    void newDriveControl() {
+    public void newDriveControl() {
         throttle = gamepad1.left_stick_y;
         rightThrottle = gamepad1.right_stick_y;
 
@@ -128,12 +129,21 @@ public class Meet1_Teleop extends OpMode {
         }
 
         if (gamepad1.right_trigger == 1) {
-            robot.linear.setPower(1);
+            if (robot.linear.getCurrentPosition() < 17300) {
+                robot.linear.setPower(1);
+            } else {
+                robot.linear.setPower(0);
+            }
         } else if (gamepad1.left_trigger == 1) {
-            robot.linear.setPower(-1);
+            if (robot.linear.getCurrentPosition() > 50) {
+                robot.linear.setPower(-1);
+            } else {
+                robot.linear.setPower(0);
+            }
         } else {
             robot.linear.setPower(0);
         }
+        telemetry.addData("Linear Encoder", robot.linear.getCurrentPosition());
 
         if (joy1.toggle.right_bumper) {
             robot.capServo.setPosition(.45);
@@ -148,5 +158,4 @@ public class Meet1_Teleop extends OpMode {
         }
 
     }
-
 }
