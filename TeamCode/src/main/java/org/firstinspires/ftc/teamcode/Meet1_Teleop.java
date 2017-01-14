@@ -22,6 +22,7 @@ public class Meet1_Teleop extends OpMode {
     Boolean slowMode = false;
     final double SLOWMODEPOWER = 0.6;
 
+
     @Override
     public void init() {
         robot.init(hardwareMap);
@@ -41,11 +42,10 @@ public class Meet1_Teleop extends OpMode {
     public void loop() {
         newDriveControl();
         buttonControl();
-        //servoControl(robot.rightClaw);
-        telemetry.addData("Slow Mode(Hit X)", slowMode);
+        //telemetry.addData("Slow Mode(Hit X)", slowMode);
         telemetry.addData("Status", "Running: " + runtime.toString());
         telemetry.addData("Controls", "Y-ClawOut,A-ClawIn,DpadU-Shoot");
-
+        telemetry.addData("Linear Slide(CAP=16.5k)", robot.linear.getCurrentPosition());
     }
 
     @Override
@@ -84,7 +84,7 @@ public class Meet1_Teleop extends OpMode {
         telemetry.addData("Throttle(L,R)", robot.leftMotor.getPower() + ", " + robot.rightMotor.getPower());
     }
 
-    void newDriveControl() {
+    public void newDriveControl() {
         throttle = gamepad1.left_stick_y;
         rightThrottle = gamepad1.right_stick_y;
 
@@ -122,51 +122,39 @@ public class Meet1_Teleop extends OpMode {
         }
 
 
+        if (gamepad1.a) { //initial
 
-        if (gamepad1.a)
-
-        { //initial
-
-        } else if (gamepad1.y)
-
-        { //closed
+        } else if (gamepad1.y) { //closed
 
         }
 
-        if (gamepad1.right_trigger == 1)
-
-        {
-            //robot.linear.setPower(1);
-        } else if (gamepad1.left_trigger == 1)
-
-        {
-            //robot.linear.setPower(-1);
-        } else
-
-        {
-            //robot.linear.setPower(0);
+        if (gamepad1.left_trigger == 1) {
+            if (robot.linear.getCurrentPosition() > 0) {
+                robot.linear.setPower(-1);
+            } else {
+                robot.linear.setPower(0);
+            }
+        } else if (gamepad1.right_trigger == 1) {
+            if (robot.linear.getCurrentPosition() < 16500) {
+                robot.linear.setPower(1);
+            } else {
+                robot.linear.setPower(0);
+            }
+        } else {
+            robot.linear.setPower(0);
         }
 
-        if (joy1.toggle.right_bumper)
-
-        {
-            robot.capServo.setPosition(.21);
-        } else
-
-        {
-            robot.capServo.setPosition(.42);
+        if (joy1.toggle.right_bumper) {
+            robot.capServo.setPosition(.45);
+        } else {
+            robot.capServo.setPosition(.02);
         }
 
-        if (gamepad1.dpad_up)
-
-        {
+        if (gamepad1.dpad_up) {
             robot.shooter.setPower(0.8);
-        } else
-
-        {
+        } else {
             robot.shooter.setPower(0);
         }
 
     }
-
 }

@@ -45,20 +45,20 @@ public class MainRobot {
         // Define and Initialize Motors
         leftMotor = hwMap.dcMotor.get("left");
         rightMotor = hwMap.dcMotor.get("right");
-        //linear = hwMap.dcMotor.get("linear");
+        linear = hwMap.dcMotor.get("linear");
         shooter = hwMap.dcMotor.get("shooter");
         sweeper = hwMap.dcMotor.get("sweeper");
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
-        //linear.setDirection(DcMotor.Direction.FORWARD);
+        linear.setDirection(DcMotor.Direction.REVERSE);
         shooter.setDirection(DcMotor.Direction.FORWARD);
         sweeper.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
-        //linear.setPower(0);
+        linear.setPower(0);
         shooter.setPower(0);
         sweeper.setPower(0);
 
@@ -66,14 +66,14 @@ public class MainRobot {
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //linear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        linear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         sweeper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //Set Brake Behavior
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //linear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        linear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         sweeper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -81,7 +81,7 @@ public class MainRobot {
         beaconServo = hwMap.servo.get("auto");
         capServo = hwMap.servo.get("cap");
         beaconServo.setPosition(0.7);
-        capServo.setPosition(0.42);
+        capServo.setPosition(0.02);
 
         //Initialize Sensors
         gyroSensor = (ModernRoboticsI2cGyro) hwMap.gyroSensor.get("gyro");

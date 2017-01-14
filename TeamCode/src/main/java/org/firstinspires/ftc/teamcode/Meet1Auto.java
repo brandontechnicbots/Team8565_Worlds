@@ -61,10 +61,10 @@ abstract public class Meet1Auto extends LinearOpMode {
         if (getRedAlliance()) {
             encoderGyroDrive(300, 0.3); //1st go forward
             gyroTurn(37); //1st turn
-            encoderGyroDrive(3200, 0.5); //2nd go forward
+            encoderGyroDrive(2900, 0.5); //2nd go forward
             gyroTurn(-29, 1, 0); //2nd turn
-            encoderGyroDrive(950, 0.5); //go forward into wall
-            gyroTurn(-7); //3rd turn
+            encoderGyroDrive(1550, 0.5); //go forward into wall
+            gyroTurn(-8, 1, 0.9); //3rd turn
         } else {
             encoderGyroDrive(200, -0.3);
             gyroTurn(-39);
@@ -155,11 +155,15 @@ abstract public class Meet1Auto extends LinearOpMode {
                 break;
             }
         }
+
+        if (getRedAlliance()) {
+            encoderGyroDrive(100, -0.3);
+        }
     }
 
     private void endNavigation() {
         if (getRedAlliance()) {
-            gyroTurn(51, 1, 0);
+            gyroTurn(66, 1, 0);
             encoderGyroDrive(3300, -0.4);
         } else {
             gyroTurn(-51, 1, 0);
