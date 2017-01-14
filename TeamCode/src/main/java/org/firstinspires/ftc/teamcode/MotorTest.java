@@ -29,20 +29,14 @@ public class MotorTest extends Meet1Auto {
         telemetry.addData("PHASE 2-SERVOS", "CHECK TELEMETRY");
         telemetry.update();
 
-        robot.frontServo.setPosition(0.8);
-        robot.backServo.setPosition(0.8);
-        robot.leftClaw.setPosition(0.586);
-        robot.rightClaw.setPosition(0.42);
-        telemetry.addData("Servos", robot.frontServo.getPosition() + ", " +
-                robot.backServo.getPosition() + ", " +
-                robot.leftClaw.getPosition() + ", " +
-                robot.rightClaw.getPosition());
+        robot.beaconServo.setPosition(0.46);
+        robot.capServo.setPosition(0.45);
+        telemetry.addData("Servos", robot.beaconServo.getPosition() + ", " +
+                robot.capServo.getPosition());
         robotSleep(2000);
 
-        robot.frontServo.setPosition(0.1);
-        robot.backServo.setPosition(0.1);
-        robot.leftClaw.setPosition(0.426);
-        robot.rightClaw.setPosition(0.58);
+        robot.beaconServo.setPosition(0.7);
+        robot.capServo.setPosition(0.02);
 
         robotSleep(2000);
 

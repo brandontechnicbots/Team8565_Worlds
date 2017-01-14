@@ -51,7 +51,7 @@ public class MainRobot {
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
-        linear.setDirection(DcMotor.Direction.FORWARD);
+        linear.setDirection(DcMotor.Direction.REVERSE);
         shooter.setDirection(DcMotor.Direction.FORWARD);
         sweeper.setDirection(DcMotor.Direction.FORWARD);
 
@@ -81,7 +81,7 @@ public class MainRobot {
         beaconServo = hwMap.servo.get("auto");
         capServo = hwMap.servo.get("cap");
         beaconServo.setPosition(0.7);
-        capServo.setPosition(0);
+        capServo.setPosition(0.02);
 
         //Initialize Sensors
         gyroSensor = (ModernRoboticsI2cGyro) hwMap.gyroSensor.get("gyro");

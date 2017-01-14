@@ -28,15 +28,10 @@ public class ServoControl extends Meet1_Teleop {
         //servoControl(robot.capServo);
         if (gamepad1.right_trigger == 1) {
             robot.linear.setPower(1);
-            //robot.leftMotor.setPower(0.2);
         } else if (gamepad1.left_trigger == 1) {
             robot.linear.setPower(-1);
-            //robot.leftMotor.setPower(-0.2);
-
         } else {
             robot.linear.setPower(0);
-            //robot.leftMotor.setPower(0);
-
         }
         newDriveControl();
 

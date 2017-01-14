@@ -45,7 +45,7 @@ public class Meet1_Teleop extends OpMode {
         //telemetry.addData("Slow Mode(Hit X)", slowMode);
         telemetry.addData("Status", "Running: " + runtime.toString());
         telemetry.addData("Controls", "Y-ClawOut,A-ClawIn,DpadU-Shoot");
-
+        telemetry.addData("Linear Slide(CAP=16.5k)", robot.linear.getCurrentPosition());
     }
 
     @Override
@@ -128,27 +128,26 @@ public class Meet1_Teleop extends OpMode {
 
         }
 
-        if (gamepad1.right_trigger == 1) {
-            if (robot.linear.getCurrentPosition() < 17300) {
-                robot.linear.setPower(1);
+        if (gamepad1.left_trigger == 1) {
+            if (robot.linear.getCurrentPosition() > 0) {
+                robot.linear.setPower(-1);
             } else {
                 robot.linear.setPower(0);
             }
-        } else if (gamepad1.left_trigger == 1) {
-            if (robot.linear.getCurrentPosition() > 50) {
-                robot.linear.setPower(-1);
+        } else if (gamepad1.right_trigger == 1) {
+            if (robot.linear.getCurrentPosition() < 16500) {
+                robot.linear.setPower(1);
             } else {
                 robot.linear.setPower(0);
             }
         } else {
             robot.linear.setPower(0);
         }
-        telemetry.addData("Linear Encoder", robot.linear.getCurrentPosition());
 
         if (joy1.toggle.right_bumper) {
             robot.capServo.setPosition(.45);
         } else {
-            robot.capServo.setPosition(.0);
+            robot.capServo.setPosition(.02);
         }
 
         if (gamepad1.dpad_up) {
