@@ -61,10 +61,10 @@ abstract public class Meet1Auto extends LinearOpMode {
         if (getRedAlliance()) {
             encoderGyroDrive(300, 0.3); //1st go forward
             gyroTurn(37); //1st turn
-            encoderGyroDrive(2900, 0.5); //2nd go forward
+            encoderGyroDrive(3100, 0.5); //2nd go forward
             gyroTurn(-29, 1, 0); //2nd turn
             encoderGyroDrive(1550, 0.5); //go forward into wall
-            gyroTurn(-8, 1, 0.9); //3rd turn
+            gyroTurn(-6, 0.8, 1); //3rd turn
         } else {
             encoderGyroDrive(200, -0.3);
             gyroTurn(-39);
@@ -78,8 +78,8 @@ abstract public class Meet1Auto extends LinearOpMode {
 
     private void detectLine() {
         if (getRedAlliance()) {
-            robot.leftMotor.setPower(-0.17);
-            robot.rightMotor.setPower(-0.22);
+            robot.leftMotor.setPower(-0.19);
+            robot.rightMotor.setPower(-0.24);
         } else {
             robot.leftMotor.setPower(0.2);
             robot.rightMotor.setPower(0.19);
@@ -111,9 +111,9 @@ abstract public class Meet1Auto extends LinearOpMode {
         }
         if (redTotal + blueTotal > 30) { //Only run if with readings
             if ((redTotal < blueTotal) ^ getRedAlliance()) { //XOR blue
-                robot.beaconServo.setPosition(.94);
+                robot.beaconServo.setPosition(.95);
             } else if (redTotal != blueTotal) {
-                robot.beaconServo.setPosition(.46);
+                robot.beaconServo.setPosition(.45);
             }
             robotSleep(400);
             robot.beaconServo.setPosition(.7);

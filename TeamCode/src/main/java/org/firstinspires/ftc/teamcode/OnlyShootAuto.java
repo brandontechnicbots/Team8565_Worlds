@@ -29,20 +29,24 @@ abstract public class OnlyShootAuto extends Meet1Auto {
         robotSleep(getDelay()); //do we need delay
 
         navigateToShoot();
-        shootBalls();
-        endShootNavigation();
+        //shootBalls();
+        //endShootNavigation();
     }
 
     private void navigateToShoot() {
         if (getRedAlliance()) {
+            gyroTurn(-60,0,1);
+            robot.shooter.setPower(0.75); //turn on shooter
+            robotSleep(600);
+            robot.shooter.setPower(0);
+            gyroTurn(-77);
+            robotSleep(10000);
+            encoderGyroDrive(2000,0.4);
 
         } else {
             encoderGyroDrive(500, 0.5);
-            insertGamepadBreakpont();
             gyroTurn(90);
-            insertGamepadBreakpont();
             encoderGyroDrive(1500, -0.5);
-            insertGamepadBreakpont();
         }
     }
 
@@ -56,10 +60,8 @@ abstract public class OnlyShootAuto extends Meet1Auto {
 
         } else {
             if (getShootingEndOnRamp()) {
-                insertGamepadBreakpont();
                 encoderGyroDrive(800, -0.5);
             } else {
-                insertGamepadBreakpont();
                 gyroTurn(-60);
                 encoderGyroDrive(1800, 0.5);
             }
