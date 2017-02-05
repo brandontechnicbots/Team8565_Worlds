@@ -116,17 +116,16 @@ public class Meet1_Teleop extends OpMode {
         }
 
         if (joy1.toggle.y) {
-            robot.sweeper.setPower(0.9);
+            robot.sweeper.setPower(-0.9);
         } else {
             robot.sweeper.setPower(0);
         }
 
-
-        if (gamepad1.a) { //initial
-
-        } else if (gamepad1.y) { //closed
-
-        }
+        /*if (joy1.toggle.dpad_down) {
+            robot.sweeper.setPower(-0.9);
+        } else {
+            robot.sweeper.setPower(0);
+        }*/
 
         if (gamepad1.left_trigger == 1) {
             if (robot.linear.getCurrentPosition() > 0) {
@@ -155,6 +154,7 @@ public class Meet1_Teleop extends OpMode {
         } else {
             robot.shooter.setPower(0);
         }
+
 
     }
 }

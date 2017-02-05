@@ -62,7 +62,7 @@ abstract public class Meet1Auto extends LinearOpMode {
             encoderGyroDrive(300, 0.3); //1st go forward
             gyroTurn(37); //1st turn
             encoderGyroDrive(3100, 0.5); //2nd go forward
-            gyroTurn(-29, 1, 0); //2nd turn
+            gyroTurn(-28, 1, 0); //2nd turn
             encoderGyroDrive(1550, 0.5); //go forward into wall
             gyroTurn(-6, 0.8, 1); //3rd turn
         } else {
@@ -95,6 +95,8 @@ abstract public class Meet1Auto extends LinearOpMode {
 
         if (!getRedAlliance()) { //Compensation on blue only
             encoderGyroDrive(100, -0.3);
+        } else { //Compensation on red only
+            encoderGyroDrive(50, 0.3);
         }
     }
 
@@ -125,7 +127,7 @@ abstract public class Meet1Auto extends LinearOpMode {
         robot.shooter.setPower(0.75); //turn on shooter
         robotSleep(600);
         robot.shooter.setPower(0);
-        robot.sweeper.setPower(0.9);
+        robot.sweeper.setPower(-0.9);
         robotSleep(2000); //pause between shots
         robot.sweeper.setPower(0);
         robot.shooter.setPower(0.75);
@@ -156,8 +158,8 @@ abstract public class Meet1Auto extends LinearOpMode {
             }
         }
 
-        if (getRedAlliance()) {
-            encoderGyroDrive(100, -0.3);
+        if (getRedAlliance()) { //red backward after second white line
+            encoderGyroDrive(50, -0.3);
         }
     }
 
