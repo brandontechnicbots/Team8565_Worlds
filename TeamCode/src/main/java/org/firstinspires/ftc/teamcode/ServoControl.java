@@ -33,6 +33,12 @@ public class ServoControl extends Meet1_Teleop {
         } else {
             robot.linear.setPower(0);
         }
+        if (gamepad1.y)
+        {
+            robot.sweeper.setPower(0.1);
+        } else {
+            robot.sweeper.setPower(0);
+        }
         newDriveControl();
 
     }
