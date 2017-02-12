@@ -29,8 +29,8 @@ abstract public class OnlyShootAuto extends Meet1Auto {
         robotSleep(getDelay()); //do we need delay
 
         navigateToShoot();
-        //shootBalls();
-        //endShootNavigation();
+        shootBalls();
+        endShootNavigation();
     }
 
     private void navigateToShoot() {
@@ -46,7 +46,7 @@ abstract public class OnlyShootAuto extends Meet1Auto {
         } else {
             encoderGyroDrive(500, 0.5);
             gyroTurn(90);
-            encoderGyroDrive(1500, -0.5);
+            encoderGyroDrive(1450, -0.5);
         }
     }
 

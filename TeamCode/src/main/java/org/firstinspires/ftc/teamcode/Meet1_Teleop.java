@@ -19,18 +19,21 @@ public class Meet1_Teleop extends OpMode {
     GamepadWrapper joy1 = new GamepadWrapper();
 
     double throttle, secondThrottle, secondRightThrottle, rightThrottle;
+    private int doublePressRBumper = 0;
     Boolean slowMode = false;
     final double SLOWMODEPOWER = 0.6;
 
 
     @Override
     public void init() {
+
         robot.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
     }
 
     @Override
     public void init_loop() {
+
     }
 
     @Override
@@ -105,6 +108,7 @@ public class Meet1_Teleop extends OpMode {
     }
 
     private void buttonControl() {
+
         joy1.update(gamepad1);
 
         if (gamepad1.x) {
@@ -146,8 +150,13 @@ public class Meet1_Teleop extends OpMode {
             robot.linear.setPower(0);
         }
 
-        if (joy1.toggle.right_bumper) {
-            robot.capServo.setPosition(.45);
+        if (gamepad1.right_bumper) {
+            doublePressRBumper++;
+            telemetry.addData("Double Bumper,", doublePressRBumper);
+            if (doublePressRBumper > 1000) {
+                robot.capServo.setPosition(.45);
+                doublePressRBumper = 0;
+            }
         } else {
             robot.capServo.setPosition(.02);
         }

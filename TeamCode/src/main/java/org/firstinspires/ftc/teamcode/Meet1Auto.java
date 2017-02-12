@@ -170,7 +170,7 @@ abstract public class Meet1Auto extends LinearOpMode {
             gyroTurn(66, 1, 0);
             encoderGyroDrive(3300, -0.4);
         } else {
-            gyroTurn(-51, 1, 0);
+            gyroTurn(-54, 1, 0);
             encoderGyroDrive(3300, 0.4);
         }
     }

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.annotation.TargetApi;
+import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -59,8 +60,8 @@ public class VuforiaOp extends LinearOpMode{
         rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-        leftMotor.setPower(0.05);
-        rightMotor.setPower(0.05);
+        leftMotor.setPower(0.01);
+        rightMotor.setPower(0.01);
 
         while(opModeIsActive() && tools.getRawPose() == null) {
             idle();
@@ -75,19 +76,51 @@ public class VuforiaOp extends LinearOpMode{
 
         VectorF trans = navOffWall(tools.getPose().getTranslation(), Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
 
-        if(trans.get(0) > 0)
+        boolean movingLeft = false, movingRight = false;
+        Log.d("Angle from beacon: ", angles.toString());
+        Log.d("Trans: ", trans.toString());
+        telemetry.addData("Angle from beacon: ", angles.toString());
+
+      /*  if(trans.get(0) > 0)
         {
-            leftMotor.setPower(0.02);
-            rightMotor.setPower(-0.02);
+            leftMotor.setPower(0.01);
+            rightMotor.setPower(-0.01);
         } else {
-            leftMotor.setPower(-0.02);
-            rightMotor.setPower(0.02);
+            movingRight = true;
+            leftMotor.setPower(-0.01);
+            rightMotor.setPower(0.01);
+            movingLeft = true;
         }
 
         do{
             if(tools.getPose() != null)
             {
                 trans = navOffWall(tools.getPose().getTranslation(), Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
+            } else {
+                leftMotor.setPower(0);
+                rightMotor.setPower(0);
+                Log.d("Angle from beacon: ", angles.toString());
+                telemetry.addData("Angle from beacon: ", angles.toString());
+                while (tools.getPose() == null)
+                {
+                    if (movingRight)
+                    {
+                        leftMotor.setPower(-0.01);
+                        rightMotor.setPower(0.01);
+                    } else if (movingLeft){
+                        leftMotor.setPower(0.01);
+                        rightMotor.setPower(-0.01);
+                    }
+                }
+                leftMotor.setPower(0);
+                rightMotor.setPower(0);
+
+                Log.d("Angle from beacon: ", angles.toString());
+                telemetry.addData("Angle from beacon: ", angles.toString());
+                telemetry.addData("detected, " ,leftMotor.getPower());
+
+                trans = navOffWall(tools.getPose().getTranslation(), Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
+                break;
             }
             idle();
         } while (opModeIsActive() && Math.abs(trans.get(0)) > 30);
@@ -101,8 +134,8 @@ public class VuforiaOp extends LinearOpMode{
         leftMotor.setTargetPosition((int) (leftMotor.getCurrentPosition() + ((Math.hypot(trans.get(0), trans.get(2)) + 150) / 409.575 * 1120))); //first int is phone distance, econd int is wheel circum, third int is ticks per sec
         rightMotor.setTargetPosition((int) (rightMotor.getCurrentPosition() + ((Math.hypot(trans.get(0), trans.get(2)) + 150) / 409.575 * 1120)));
 
-        leftMotor.setPower(0.5);
-        rightMotor.setPower(0.5);
+        leftMotor.setPower(0.01);
+        rightMotor.setPower(0.01);
 
         while(opModeIsActive() && leftMotor.isBusy() && rightMotor.isBusy()){
             idle();
@@ -120,18 +153,18 @@ public class VuforiaOp extends LinearOpMode{
             {
                 if(tools.getPose().getTranslation().get(0) > 0)
                 {
-                    leftMotor.setPower(-0.3);
-                    rightMotor.setPower(0.3);
+                    leftMotor.setPower(-0.01);
+                    rightMotor.setPower(0.01);
                 } else {
-                    leftMotor.setPower(0.3);
-                    rightMotor.setPower(-0.3);
+                    leftMotor.setPower(0.01);
+                    rightMotor.setPower(-0.01);
                 }
             } else {
-                leftMotor.setPower(-0.3);
-                rightMotor.setPower(0.3);
+                leftMotor.setPower(-0.01);
+                rightMotor.setPower(0.01);
             }
         }
-
+*/
         leftMotor.setPower(0);
         rightMotor.setPower(0);
     }
@@ -147,8 +180,9 @@ public class VuforiaOp extends LinearOpMode{
 
         public VectorF anglesFromTarget(VuforiaTrackableDefaultListener image) {
             float[] data = image.getRawPose().getData();
-            float[][] rotation = {{data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8],
+            float[][] rotation = {{data[0], data[1]}, {data[4], data[5], data[6]}, {data[8],
                     data[9], data[10]}};
+            telemetry.addData("rotation: ", rotation);
 
             double thetaX = Math.atan2(rotation[2][1], rotation[2][2]);
             double thetaY = Math.atan2(-rotation[2][0], Math.sqrt(rotation[2][1] * rotation[2][1] +
