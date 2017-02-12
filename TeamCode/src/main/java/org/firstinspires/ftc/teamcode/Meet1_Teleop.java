@@ -115,7 +115,10 @@ public class Meet1_Teleop extends OpMode {
             robot.beaconServo.setPosition(.7);
         }
 
-        if (joy1.toggle.y) {
+
+        if (gamepad1.dpad_left) {
+            robot.sweeper.setPower(0.03);
+        } else if (joy1.toggle.y) {
             robot.sweeper.setPower(-0.9);
         } else {
             robot.sweeper.setPower(0);

@@ -94,7 +94,7 @@ abstract public class Meet1Auto extends LinearOpMode {
         }
 
         if (!getRedAlliance()) { //Compensation on blue only
-            encoderGyroDrive(100, -0.3);
+            encoderGyroDrive(50, -0.3);
         } else { //Compensation on red only
             encoderGyroDrive(50, 0.3);
         }
@@ -160,6 +160,8 @@ abstract public class Meet1Auto extends LinearOpMode {
 
         if (getRedAlliance()) { //red backward after second white line
             encoderGyroDrive(50, -0.3);
+        } else {
+            encoderGyroDrive(10,0.3);
         }
     }
 
