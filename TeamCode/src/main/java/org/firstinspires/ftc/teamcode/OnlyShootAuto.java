@@ -13,6 +13,8 @@ abstract public class OnlyShootAuto extends Meet1Auto {
         robot.gyroSensor.calibrate();
 
         telemetry.addData("Status", "Wait For Start");
+        telemetry.addData("DELAY(ms):", Integer.toString(getDelay()) + ",Red Alliance:" + getRedAlliance()
+                            + ",Ramp End:"+ getShootingEndOnRamp());
         telemetry.update();
         idle();
         waitForStart();
@@ -29,38 +31,44 @@ abstract public class OnlyShootAuto extends Meet1Auto {
         robotSleep(getDelay()); //do we need delay
 
         navigateToShoot();
-        shootBalls();
+        shootBalls(false);
         endShootNavigation();
     }
 
-    private void navigateToShoot() {
-        if (getRedAlliance()) {
-            gyroTurn(-60,0,1);
+    /*
+                gyroTurn(-60,0,1);
             robot.shooter.setPower(0.75); //turn on shooter
             robotSleep(600);
             robot.shooter.setPower(0);
             gyroTurn(-77);
             robotSleep(10000);
             encoderGyroDrive(2000,0.4);
-
-        } else {
-            encoderGyroDrive(500, 0.5);
+     */
+    private void navigateToShoot() {
+        if (getRedAlliance()) {
+            encoderGyroDrive(200, 0.5);
             gyroTurn(90);
-            encoderGyroDrive(1450, -0.5);
+            encoderGyroDrive(950, 0.5);
+        } else {
+            encoderGyroDrive(200, 0.5);
+            gyroTurn(90);
+            encoderGyroDrive(950, -0.5);
         }
     }
 
     private void endShootNavigation() {
         if (getRedAlliance()) {
             if (getShootingEndOnRamp()) {
-
+                gyroTurn(-20);
+                encoderGyroDrive(1350, 0.5);
             } else {
 
             }
 
         } else {
             if (getShootingEndOnRamp()) {
-                encoderGyroDrive(800, -0.5);
+                gyroTurn(20,1,0);
+                encoderGyroDrive(1450, -0.5);
             } else {
                 gyroTurn(-60);
                 encoderGyroDrive(1800, 0.5);

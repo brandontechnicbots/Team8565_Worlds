@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "OnlyShoot_Red", group = "Linear Opmode")
-public class OnlyShootAuto_Red extends OnlyShootAuto {
+@Autonomous(name = "OnlyShoot_RedRamp", group = "Linear Opmode")
+public class OnlyShootAuto_RedRamp extends OnlyShootAuto {
     @Override
     protected int getDelay() {
-        return 10000;
+        return 0;
     }
 
     @Override
@@ -16,5 +16,5 @@ public class OnlyShootAuto_Red extends OnlyShootAuto {
     }
 
     @Override
-    protected Boolean getShootingEndOnRamp() { return false;}
+    protected Boolean getShootingEndOnRamp() { return true;}
 }

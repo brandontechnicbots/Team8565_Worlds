@@ -16,7 +16,7 @@ import java.io.IOException;
 //@Autonomous(name = "Autonomous", group = "Linear Opmode")
 abstract public class Meet1Auto extends LinearOpMode {
 
-    MainRobot robot = new MainRobot();   // Get Robot Config. HINT TO SAMUEL: Edit robot config in the MainRobot file.
+    MainRobot robot = new MainRobot(); // Get Robot Config. Edit robot config in the MainRobot file.
     private ElapsedTime runtime = new ElapsedTime();
     Double lineThreshold; //White tape threshold, computed in the loadTapeCalibration OpMode
     PIDController gyroController; //PID Controller for Gyro
@@ -32,6 +32,7 @@ abstract public class Meet1Auto extends LinearOpMode {
         robot.gyroSensor.calibrate();
 
         telemetry.addData("Status", "Wait For Start");
+        telemetry.addData("DELAY(ms):", Integer.toString(getDelay()) + ", Red Alliance:" + getRedAlliance());
         telemetry.addData("Line Threshold", lineThreshold + ", Current: " + robot.lightSensor.getLightDetected());
         telemetry.update();
         idle();
@@ -123,7 +124,13 @@ abstract public class Meet1Auto extends LinearOpMode {
     }
 
     void shootBalls() {
-        encoderGyroDrive(300, -0.3); //drive backwards
+        shootBalls(true);
+    } //overload this to hell
+
+    void shootBalls(boolean preMove) {
+        if (preMove) {
+            encoderGyroDrive(300, -0.3); //drive backwards
+        }
         robot.shooter.setPower(0.75); //turn on shooter
         robotSleep(600);
         robot.shooter.setPower(0);
