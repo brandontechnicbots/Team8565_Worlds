@@ -8,9 +8,9 @@ import com.vuforia.Tool;
 import com.vuforia.Vec3F;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.opencv.android.Utils;
-import org.opencv.core.*;
-import org.opencv.imgproc.*;
+//import org.opencv.android.Utils;
+//import org.opencv.core.*;
+//import org.opencv.imgproc.*;
 
 import static android.R.attr.x;
 

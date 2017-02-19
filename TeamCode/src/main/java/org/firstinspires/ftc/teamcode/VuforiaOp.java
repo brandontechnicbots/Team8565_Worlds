@@ -1,7 +1,31 @@
-package org.firstinspires.ftc.teamcode;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.util.Log;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.vuforia.CameraCalibration;
+import com.vuforia.HINT;
+import com.vuforia.Matrix34F;
+import com.vuforia.Tool;
+import com.vuforia.Vec3F;
+import com.vuforia.Vuforia;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.teamcode.R;
+
+/*package org.firstinspires.ftc.teamcode;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.media.Image;
 import android.util.Log;
 import org.opencv.core.Rect;
@@ -40,10 +64,10 @@ import static org.opencv.ml.SVM.C;
 
 /**
  * Created by Samuel on 1/20/2017.
- */
+ */ /*
 @Autonomous(name="Vuforia Op", group ="Linear Opmode")
 
-public class VuforiaOp extends LinearOpMode{
+public class VuforiaOp extends LinearOpMode {
     public final static Scalar blueLow = new Scalar(108, 0, 220);
     public final static Scalar blueHigh = new Scalar(178, 255, 255);
 
@@ -102,7 +126,7 @@ public class VuforiaOp extends LinearOpMode{
         telemetry.addData("Angle from beacon: ", angles.toString());
         Log.d("Raw Pose: ", tools.getRawPose().toString());
         Log.d("Proc. Pose: ", tools.getPose().toString());
-
+*/
       /*  if(trans.get(0) > 0)
         {
             leftMotor.setPower(0.01);
@@ -186,7 +210,7 @@ public class VuforiaOp extends LinearOpMode{
                 rightMotor.setPower(0.01);
             }
         }
-*/
+*/ /*
         leftMotor.setPower(0);
         rightMotor.setPower(0);
     }
@@ -268,7 +292,7 @@ public class VuforiaOp extends LinearOpMode{
             telemetry.addData("theta Y: ", thetaY);
             telemetry.addData("theta Z: ", thetaZ);
             return new VectorF((float)thetaX, (float)thetaY, (float)thetaZ);
-        }
+        }*/
         /*
         while(opModeIsActive())
         {
@@ -290,4 +314,4 @@ public class VuforiaOp extends LinearOpMode{
             }
             telemetry.update();
         } */
-    }
+//    }
