@@ -1,52 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.qualcomm.ftcrobotcontroller"
-          android:versionCode="19"
-          android:versionName="2.62">
-  <supports-screens   android:resizeable="true"
-      android:smallScreens="true"
-      android:normalScreens="true"
-      android:largeScreens="true"
-      android:anyDensity="true" />
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.qualcomm.ftcrobotcontroller"
+    android:versionCode="19"
+    android:versionName="2.62">
 
-  <uses-permission android:name="android.permission.CAMERA"/>
-  <uses-feature android:name="android.hardware.camera" android:required="false"/>
-  <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
-  <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
-  <uses-feature android:name="android.hardware.camera.front.autofocus" android:required="false"/>
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
 
-  <application
-    android:allowBackup="true"
-    android:largeHeap="true"
-    android:icon="@drawable/ic_launcher"
-    android:label="@string/app_name"
-    android:theme="@style/AppTheme" >
+    <uses-permission android:name="android.permission.CAMERA" />
 
-    <activity
-      android:name="org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity"
-      android:configChanges="orientation|screenSize"
-      android:label="@string/app_name"
-      android:launchMode="singleTask" >
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front.autofocus"
+        android:required="false" />
 
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme">
 
-      <intent-filter>
-        <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-      </intent-filter>
+        <activity
+            android:name="org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleTask">
 
-      <meta-data
-        android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-        android:resource="@xml/device_filter" />
-    </activity>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
-    <service
-      android:name="com.qualcomm.ftccommon.FtcRobotControllerService"
-      android:enabled="true" />
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
 
-  </application>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+        </activity>
+
+        <service
+            android:name="com.qualcomm.ftccommon.FtcRobotControllerService"
+            android:enabled="true" />
+
+    </application>
 
 </manifest>
