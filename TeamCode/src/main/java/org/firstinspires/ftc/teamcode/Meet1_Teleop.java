@@ -153,7 +153,7 @@ public class Meet1_Teleop extends OpMode {
         if (gamepad1.right_bumper) {
             doublePressRBumper++;
             telemetry.addData("Double Bumper,", doublePressRBumper);
-            if (doublePressRBumper > 1000) {
+            if (doublePressRBumper > 200) {
                 robot.capServo.setPosition(.45);
                 doublePressRBumper = 0;
             }
@@ -161,12 +161,14 @@ public class Meet1_Teleop extends OpMode {
             robot.capServo.setPosition(.02);
         }
 
-        if (gamepad1.dpad_up) {
+        if (gamepad1.dpad_up || gamepad2.dpad_up) {
             robot.shooter.setPower(0.8);
+        } else if (gamepad1.dpad_down || gamepad2.dpad_down) {
+            robot.shooter.setPower(-0.5);
         } else {
             robot.shooter.setPower(0);
         }
-
-
     }
+
+
 }

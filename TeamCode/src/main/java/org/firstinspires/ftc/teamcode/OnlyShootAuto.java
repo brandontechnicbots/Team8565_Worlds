@@ -48,11 +48,11 @@ abstract public class OnlyShootAuto extends Meet1Auto {
         if (getRedAlliance()) {
             encoderGyroDrive(200, 0.5);
             gyroTurn(90);
-            encoderGyroDrive(950, 0.5);
+            encoderGyroDrive(850, 0.5);
         } else {
-            encoderGyroDrive(200, 0.5);
+            encoderGyroDrive(250, 0.5);
             gyroTurn(90);
-            encoderGyroDrive(950, -0.5);
+            encoderGyroDrive(1300, -0.5);
         }
     }
 
@@ -60,15 +60,15 @@ abstract public class OnlyShootAuto extends Meet1Auto {
         if (getRedAlliance()) {
             if (getShootingEndOnRamp()) {
                 gyroTurn(-20);
-                encoderGyroDrive(1350, 0.5);
+                encoderGyroDrive(1650, 0.5);
             } else {
 
             }
 
         } else {
             if (getShootingEndOnRamp()) {
-                gyroTurn(20,1,0);
-                encoderGyroDrive(1450, -0.5);
+                gyroTurn(15);
+                encoderGyroDrive(1550, -0.5);
             } else {
                 gyroTurn(-60);
                 encoderGyroDrive(1800, 0.5);

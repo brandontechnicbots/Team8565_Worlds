@@ -97,7 +97,7 @@ abstract public class Meet1Auto extends LinearOpMode {
         if (!getRedAlliance()) { //Compensation on blue only
             encoderGyroDrive(50, -0.3);
         } else { //Compensation on red only
-            encoderGyroDrive(50, 0.3);
+            encoderGyroDrive(100, 0.3);
         }
     }
 
