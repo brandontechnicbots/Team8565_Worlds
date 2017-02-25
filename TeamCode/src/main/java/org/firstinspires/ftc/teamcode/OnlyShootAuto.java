@@ -59,7 +59,7 @@ abstract public class OnlyShootAuto extends Meet1Auto {
     private void endShootNavigation() {
         if (getRedAlliance()) {
             if (getShootingEndOnRamp()) {
-                gyroTurn(-20);
+                gyroTurn(-18);
                 encoderGyroDrive(1650, 0.5);
             } else {
 

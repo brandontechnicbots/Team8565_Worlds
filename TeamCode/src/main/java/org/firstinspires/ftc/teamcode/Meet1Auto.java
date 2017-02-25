@@ -97,7 +97,7 @@ abstract public class Meet1Auto extends LinearOpMode {
         if (!getRedAlliance()) { //Compensation on blue only
             encoderGyroDrive(50, -0.3);
         } else { //Compensation on red only
-            encoderGyroDrive(100, 0.3);
+            //encoderGyroDrive(150, 0.3);
         }
     }
 
@@ -129,7 +129,7 @@ abstract public class Meet1Auto extends LinearOpMode {
 
     void shootBalls(boolean preMove) {
         if (preMove) {
-            encoderGyroDrive(300, -0.3); //drive backwards
+            encoderGyroDrive(100, 0.2); //drive forwards
         }
         robot.shooter.setPower(0.75); //turn on shooter
         robotSleep(600);
