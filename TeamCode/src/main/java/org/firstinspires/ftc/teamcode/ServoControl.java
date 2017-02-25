@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "Servo Control", group = "Iterative Opmode")
+@TeleOp(name = "Linear", group = "Iterative Opmode")
 public class ServoControl extends Meet1_Teleop {
 
     @Override
