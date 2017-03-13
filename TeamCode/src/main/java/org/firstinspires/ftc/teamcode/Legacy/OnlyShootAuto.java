@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Legacy;
 
 //@Autonomous(name = "Autonomous", group = "Linear Opmode")
 abstract public class OnlyShootAuto extends Meet1Auto {

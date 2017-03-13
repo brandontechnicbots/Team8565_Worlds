@@ -1,8 +1,6 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Legacy;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
-@Autonomous(name = "Blue0", group = "Linear Opmode")
+//@Autonomous(name = "Blue0", group = "Linear Opmode")
 public class Meet1Auto_Blue extends Meet1Auto {
     @Override
     protected int getDelay() {

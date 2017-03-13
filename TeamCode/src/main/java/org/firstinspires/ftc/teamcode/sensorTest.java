@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @TeleOp(name = "Calibration", group = "Iterative Opmode")
-public class sensorTest extends Meet1_Teleop {
+public class sensorTest extends SSRTeleop {
     double whiteValue, matValue;
 
     @Override

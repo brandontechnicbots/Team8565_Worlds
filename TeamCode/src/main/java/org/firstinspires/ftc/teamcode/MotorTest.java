@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name = "Motor Test", group = "Linear Opmode")
-public class MotorTest extends Meet1Auto {
+public class MotorTest extends SSRAuto {
 
     @Override
     public void runOpMode() {
@@ -20,23 +20,28 @@ public class MotorTest extends Meet1Auto {
 
         telemetry.addData("PHASE 1-Motors/Gyro", "CHECK TELEMETRY");
         telemetry.update();
-        encoderGyroDrive(500, 0.3);
-        encoderGyroDrive(500, -0.3);
+        encoderGyroDrive(1500, 0.3);
+        insertGamepadBreakpont();
+        encoderGyroDrive(1500, -0.3);
+        insertGamepadBreakpont();
         gyroTurn(-90);
+        insertGamepadBreakpont();
         gyroTurn(180);
+        insertGamepadBreakpont();
         gyroTurn(-90);
+        insertGamepadBreakpont();
 
         telemetry.addData("PHASE 2-SERVOS", "CHECK TELEMETRY");
         telemetry.update();
 
-        robot.beaconServo.setPosition(0.46);
-        robot.capServo.setPosition(0.45);
-        telemetry.addData("Servos", robot.beaconServo.getPosition() + ", " +
-                robot.capServo.getPosition());
+        robot.beaconServo.setPosition(0.98);
+        //robot.capServo.setPosition(0.45);
+        telemetry.addData("Servos", robot.beaconServo.getPosition() + ", "
+                );
         robotSleep(2000);
 
-        robot.beaconServo.setPosition(0.7);
-        robot.capServo.setPosition(0.02);
+        robot.beaconServo.setPosition(0.22);
+        //robot.capServo.setPosition(0.02);
 
         robotSleep(2000);
 
