@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class SSRRobot {
     /* Public OpMode members. */
     public DcMotor leftMotor, rightMotor, linear, shooter, sweeper = null;
-    public Servo beaconServo, frontServo, backServo, leftClaw, rightClaw, leftCapServo, rightCapServo = null;
+    public Servo beaconServo, releaseServo, leftCapServo, rightCapServo = null;
     public ModernRoboticsI2cGyro gyroSensor = null;
     public ModernRoboticsAnalogOpticalDistanceSensor lightSensor = null;
     public ModernRoboticsI2cColorSensor colorSensor = null;
@@ -42,20 +42,20 @@ public class SSRRobot {
         leftMotor = hwMap.dcMotor.get("left");
         rightMotor = hwMap.dcMotor.get("right");
 //        linear = hwMap.dcMotor.get("linear");
-//        shooter = hwMap.dcMotor.get("shooter");
+        shooter = hwMap.dcMotor.get("shooter");
 //        sweeper = hwMap.dcMotor.get("sweeper");
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
 //        linear.setDirection(DcMotor.Direction.REVERSE);
-//        shooter.setDirection(DcMotor.Direction.FORWARD);
+        shooter.setDirection(DcMotor.Direction.FORWARD);
 //        sweeper.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
 //        linear.setPower(0);
-//        shooter.setPower(0);
+        shooter.setPower(0);
 //        sweeper.setPower(0);
 
         // Set all motors to run with/without encoders.
@@ -63,21 +63,22 @@ public class SSRRobot {
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        linear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        sweeper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //Set Brake Behavior
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        linear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        sweeper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Define and initialize ALL installed servos.
-        beaconServo = hwMap.servo.get("beacon" +
-                "");
+        beaconServo = hwMap.servo.get("beacon");
+        releaseServo = hwMap.servo.get("release");
         //leftCapServo = hwMap.servo.get("linear1");
         //rightCapServo = hwMap.servo.get("linear1");
+        releaseServo.setPosition(0.076);
         beaconServo.setPosition(0.63);
         //leftCapServo.setPosition(0.02);
         //rightCapServo.setPosition(0.02);

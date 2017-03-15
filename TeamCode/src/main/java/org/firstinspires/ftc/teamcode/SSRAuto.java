@@ -57,15 +57,14 @@ abstract public class SSRAuto extends LinearOpMode {
 
     private void navigateToBeacon() {
         if (getRedAlliance()) {
-            /*encoderGyroDrive(300, 0.3); //1st go forward
-            gyroTurn(37); //1st turn
-            encoderGyroDrive(3100, 0.5); //2nd go forward
-            gyroTurn(-28, 1, 0); //2nd turn
-            encoderGyroDrive(1550, 0.5); //go forward into wall
-            gyroTurn(-6, 0.8, 1); //3rd turn */
+            gyroTurn(34,0,1);
+            encoderGyroDrive(3300, 0.4); //go forward
+            gyroTurn(-26, 1, 0); //2nd turn
+            encoderOnlyDrive(3200, 0.4, 0.4); //go forward into wall
+            gyroTurn(-4);
         } else {
             gyroTurn(-25,0,1);
-            encoderGyroDrive(2700, -0.6);
+            encoderGyroDrive(2900, -0.6);
             gyroTurn(5); //do a rough curve
             encoderGyroDrive(400, -0.6);
             gyroTurn(5);
@@ -77,8 +76,8 @@ abstract public class SSRAuto extends LinearOpMode {
 
     private void detectLine() {
         if (getRedAlliance()) {
-            robot.leftMotor.setPower(-0.19);
-            robot.rightMotor.setPower(-0.24);
+            robot.leftMotor.setPower(-0.15);
+            robot.rightMotor.setPower(-0.20);
         } else {
             robot.leftMotor.setPower(0.13);
             robot.rightMotor.setPower(0.17);
@@ -95,16 +94,21 @@ abstract public class SSRAuto extends LinearOpMode {
         if (!getRedAlliance()) { //Compensation on blue only
             encoderGyroDrive(50, 0.3);
         } else { //Compensation on red only
-            //encoderGyroDrive(150, 0.3);
+            encoderGyroDrive(230, 0.15);
         }
     }
 
     private void detectSecondLine() {
         if (getRedAlliance()) {
+            encoderGyroDrive(50, -0.3); //just so we don't detect the same line twice
+            gyroTurn(-2.5, 0, 1);
+            encoderOnlyDrive(800, -0.2, -0.25);
+            detectLine();
+            encoderGyroDrive(50, 0.15);
 
         } else {
             encoderGyroDrive(50, 0.3); //just so we don't detect the same line twice
-            gyroTurn(3, 0, 1);
+            gyroTurn(2.5, 0, 1);
             encoderOnlyDrive(800, 0.2, 0.25);
             detectLine();
         }
@@ -113,7 +117,7 @@ abstract public class SSRAuto extends LinearOpMode {
     private void pushBeacon() {
         int redTotal = 0;
         int blueTotal = 0;
-        for (int i = 0; i < 1000; i++) { //Runs 100 times, tune this
+        for (int i = 0; i < 2000; i++) { //Runs 100 times, tune this
             if (redTotal != 255 && blueTotal != 255) {
                 redTotal += robot.colorSensor.red(); // Add to the values
                 blueTotal += robot.colorSensor.blue();
@@ -133,7 +137,7 @@ abstract public class SSRAuto extends LinearOpMode {
     }
 
     void shootBalls() {
-        shootBalls(true);
+        shootBalls(false);
     } //overload this to hell
 
     void shootBalls(boolean preMove) {
@@ -143,9 +147,9 @@ abstract public class SSRAuto extends LinearOpMode {
         robot.shooter.setPower(0.75); //turn on shooter
         robotSleep(600);
         robot.shooter.setPower(0);
-        robot.sweeper.setPower(-0.9);
-        robotSleep(2000); //pause between shots
-        robot.sweeper.setPower(0);
+//        robot.sweeper.setPower(-0.9);
+        robotSleep(500); //pause between shots
+//        robot.sweeper.setPower(0);
         robot.shooter.setPower(0.75);
         robotSleep(600);
         robot.shooter.setPower(0);
@@ -153,15 +157,19 @@ abstract public class SSRAuto extends LinearOpMode {
 
     private void endNavigation() {
         if (getRedAlliance()) {
-            gyroTurn(66, 1, 0);
-            encoderGyroDrive(3300, -0.4);
+            gyroTurn(27, 1, 0);
+            encoderGyroDrive(1300, -0.4);
+            gyroTurn(17, 1, 0);
+            shootBalls();
+            gyroTurn(80);
+            encoderGyroDrive(1100, 0.4);
+
         } else {
-            gyroTurn(232,1,0);
-            robotSleep(500);
-            gyroTurn(10, 0, 1);
-            gyroTurn(85);
-            encoderGyroDrive(1400, 0.3);
-            gyroTurn(6,0,1);
+            gyroTurn(60,1,0);
+            gyroTurn(-46,0,1);
+            shootBalls();
+            gyroTurn(-10,1,0);
+            encoderGyroDrive(1800, 0.3);
         }
     }
 

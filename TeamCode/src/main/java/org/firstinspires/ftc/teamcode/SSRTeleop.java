@@ -37,11 +37,11 @@ public class SSRTeleop extends OpMode {
     @Override
     public void loop() {
         newDriveControl();
-        //buttonControl();
+        buttonControl();
         //telemetry.addData("Slow Mode(Hit X)", slowMode);
         telemetry.addData("Status", "Running: " + runtime.toString());
         telemetry.addData("Controls", "Y-ClawOut,A-ClawIn,DpadU-Shoot");
-        telemetry.addData("Linear Slide(CAP=16.5k)", robot.linear.getCurrentPosition());
+//        telemetry.addData("Linear Slide(CAP=16.5k)", robot.linear.getCurrentPosition());
     }
 
     @Override
@@ -105,14 +105,14 @@ public class SSRTeleop extends OpMode {
         joy1.update(gamepad1);
 
         if (gamepad1.x) {
-            robot.beaconServo.setPosition(.46);
+            robot.beaconServo.setPosition(.22);
         } else if (gamepad1.b) {
-            robot.beaconServo.setPosition(.94);
+            robot.beaconServo.setPosition(.98);
         } else if (gamepad1.a) {
-            robot.beaconServo.setPosition(.7);
+            robot.beaconServo.setPosition(.63);
         }
 
-
+        /*
         if (gamepad1.dpad_left) {
             robot.sweeper.setPower(0.03);
         } else if (joy1.toggle.y) {
@@ -126,7 +126,7 @@ public class SSRTeleop extends OpMode {
         } else {
             robot.sweeper.setPower(0);
         }*/
-
+        /*
         if (gamepad1.left_trigger == 1) {
             if (robot.linear.getCurrentPosition() > 0) {
                 robot.linear.setPower(-1);
@@ -141,17 +141,17 @@ public class SSRTeleop extends OpMode {
             }
         } else {
             robot.linear.setPower(0);
-        }
+        } */
 
         if (gamepad1.right_bumper) {
             doublePressRBumper++;
             telemetry.addData("Double Bumper,", doublePressRBumper);
             if (doublePressRBumper > 200) {
-                robot.leftCapServo.setPosition(.45);
+                robot.releaseServo.setPosition(1);
                 doublePressRBumper = 0;
             }
         } else {
-            robot.leftCapServo.setPosition(.02);
+            robot.releaseServo.setPosition(.076);
         }
 
         if (gamepad1.dpad_up || gamepad2.dpad_up) {
