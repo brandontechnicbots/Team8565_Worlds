@@ -25,8 +25,8 @@ public class ServoControl extends SSRTeleop {
 
     @Override
     public void loop() {
-        servoControl(robot.releaseServo);
-        /*if (gamepad1.right_trigger == 1) {
+        servoControl(robot.beaconServo);
+        if (gamepad1.right_trigger == 1) {
             robot.linear.setPower(1);
         } else if (gamepad1.left_trigger == 1) {
             robot.linear.setPower(-1);
@@ -38,7 +38,7 @@ public class ServoControl extends SSRTeleop {
             robot.sweeper.setPower(0.1);
         } else {
             robot.sweeper.setPower(0);
-        }*/
+        }
         newDriveControl();
 
     }
@@ -51,12 +51,12 @@ public class ServoControl extends SSRTeleop {
     public void servoControl(Servo s) {
         if (gamepad1.x)
             s.setPosition(0.5);
-        if (gamepad1.y)
+        if (gamepad1.b)
             s.setPosition(Range.clip(s.getPosition() + 0.002, 0, 1));
         else if (gamepad1.a)
             s.setPosition(Range.clip(s.getPosition() - 0.002, 0, 1));
         telemetry.addData("Servo Pos:", s.getPosition());
-        telemetry.addData("Instructions:", "X=0.5,Y=+0.002,A=-0.002");
+        telemetry.addData("Instructions:", "X=0.5,B=+0.002,A=-0.002");
 
     }
 

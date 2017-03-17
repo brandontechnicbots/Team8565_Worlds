@@ -29,12 +29,15 @@ abstract public class SSRAuto extends LinearOpMode {
 
         robot.gyroSensor.calibrate();
 
-        telemetry.addData("Status", "Wait For Start");
-        telemetry.addData("DELAY(ms):", Integer.toString(getDelay()) + ", Red Alliance:" + getRedAlliance());
-        telemetry.addData("Line Threshold", lineThreshold + ", Current: " + robot.lightSensor.getLightDetected());
-        telemetry.update();
-        idle();
-        waitForStart();
+        while (!isStarted()) {
+            telemetry.addData("Status", getRedAlliance() ? "RED alliance ready" : "BLUE alliance ready");
+            telemetry.addData("DELAY(ms):", Integer.toString(getDelay()));
+            telemetry.addData("Line Threshold", lineThreshold + ", Current: " + robot.lightSensor.getLightDetected());
+            telemetry.addData("Gyro ", robot.gyroSensor.isCalibrating() ? "CALIBRATING" : robot.gyroSensor.getIntegratedZValue());
+            telemetry.update();
+            idle();
+        }
+        //waitForStart();
         resetStartTime();
         while (opModeIsActive()) { //Quick Hack to prevent errors (hopefully)
             if (!robot.gyroSensor.isCalibrating()) {
@@ -57,13 +60,13 @@ abstract public class SSRAuto extends LinearOpMode {
 
     private void navigateToBeacon() {
         if (getRedAlliance()) {
-            gyroTurn(34,0,1);
+            gyroTurn(34, 0, 1);
             encoderGyroDrive(3300, 0.4); //go forward
             gyroTurn(-26, 1, 0); //2nd turn
             encoderOnlyDrive(3200, 0.4, 0.4); //go forward into wall
             gyroTurn(-4);
         } else {
-            gyroTurn(-25,0,1);
+            gyroTurn(-25, 0, 1);
             encoderGyroDrive(2900, -0.6);
             gyroTurn(5); //do a rough curve
             encoderGyroDrive(400, -0.6);
@@ -104,7 +107,7 @@ abstract public class SSRAuto extends LinearOpMode {
             gyroTurn(-2.5, 0, 1);
             encoderOnlyDrive(800, -0.2, -0.25);
             detectLine();
-            encoderGyroDrive(50, 0.15);
+            encoderGyroDrive(10, 0.15);
 
         } else {
             encoderGyroDrive(50, 0.3); //just so we don't detect the same line twice
@@ -127,23 +130,16 @@ abstract public class SSRAuto extends LinearOpMode {
         }
         if (redTotal + blueTotal > 30) { //Only run if with readings
             if ((redTotal < blueTotal) ^ getRedAlliance()) { //XOR blue
-                robot.beaconServo.setPosition(.98);
+                robot.beaconServo.setPosition(robot.beaconRight);
             } else if (redTotal != blueTotal) {
-                robot.beaconServo.setPosition(.22);
+                robot.beaconServo.setPosition(robot.beaconLeft);
             }
             robotSleep(400);
-            robot.beaconServo.setPosition(.63);
+            robot.beaconServo.setPosition(robot.beaconMiddle);
         }
     }
 
     void shootBalls() {
-        shootBalls(false);
-    } //overload this to hell
-
-    void shootBalls(boolean preMove) {
-        if (preMove) {
-            encoderGyroDrive(100, 0.2); //drive forwards
-        }
         robot.shooter.setPower(0.75); //turn on shooter
         robotSleep(600);
         robot.shooter.setPower(0);
@@ -161,14 +157,22 @@ abstract public class SSRAuto extends LinearOpMode {
             encoderGyroDrive(1300, -0.4);
             gyroTurn(17, 1, 0);
             shootBalls();
-            gyroTurn(80);
-            encoderGyroDrive(1100, 0.4);
+            if (getCorner()) {
+                gyroTurn(80);
+                encoderGyroDrive(1100, 0.4);
+            } else {
+                gyroTurn(-80);
+                encoderGyroDrive(2300, 0.6);
+                encoderGyroDrive(400, -0.4);
+                robotSleep(1000);
+                encoderGyroDrive(1000, 0.4);
+            }
 
         } else {
-            gyroTurn(60,1,0);
-            gyroTurn(-46,0,1);
-            shootBalls();
-            gyroTurn(-10,1,0);
+            gyroTurn(60, 1, 0);
+            gyroTurn(-46, 0, 1);
+            //shootBalls();
+            gyroTurn(-10, 1, 0);
             encoderGyroDrive(1800, 0.3);
         }
     }
@@ -220,7 +224,7 @@ abstract public class SSRAuto extends LinearOpMode {
             //if (!opModeIsActive()) return; //Emergency Kill
             double error_degrees = target_angle - robot.gyroSensor.getIntegratedZValue(); //Compute Error
             double motor_output = robot.gyroTurnController.findCorrection(error_degrees); //Get Correction
-            motor_output = (motor_output > 0) ? Range.clip(motor_output, 0.25, 0.6) : Range.clip(motor_output, -0.6, -0.25);
+            motor_output = (motor_output > 0) ? Range.clip(motor_output, 0.3, 0.6) : Range.clip(motor_output, -0.6, -0.3);
             robot.leftMotor.setPower(-1 * motor_output * leftMultiplier);
             robot.rightMotor.setPower(motor_output * rightMultiplier);
             //Log.d("DEBUG_Gyro", Double.toString(robot.gyroSensor.getIntegratedZValue()));
@@ -276,4 +280,7 @@ abstract public class SSRAuto extends LinearOpMode {
     abstract protected int getDelay();
 
     abstract protected Boolean getRedAlliance();
+
+    abstract protected Boolean getCorner();
+
 }

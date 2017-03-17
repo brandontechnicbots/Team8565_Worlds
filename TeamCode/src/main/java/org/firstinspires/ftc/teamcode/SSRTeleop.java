@@ -8,18 +8,15 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name = "Teleop", group = "Iterative Opmode")  // @Autonomous(...) is the other common choice
 public class SSRTeleop extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
-    SSRRobot robot = new SSRRobot(); // Get Robot Config. Edit robot config in the MainRobot file.
+    SSRRobot robot = new SSRRobot(); // Get Robot Config.
     GamepadWrapper joy1 = new GamepadWrapper();
 
     double throttle, secondThrottle, secondRightThrottle, rightThrottle;
     private int doublePressRBumper = 0;
     Boolean slowMode = false;
-    final double SLOWMODEPOWER = 0.6;
-
 
     @Override
     public void init() {
-
         robot.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
     }
@@ -40,7 +37,7 @@ public class SSRTeleop extends OpMode {
         buttonControl();
         //telemetry.addData("Slow Mode(Hit X)", slowMode);
         telemetry.addData("Status", "Running: " + runtime.toString());
-        telemetry.addData("Controls", "Y-ClawOut,A-ClawIn,DpadU-Shoot");
+        telemetry.addData("Controls", "X,B,A-Beacon DpadL,Y-Sweeper LT,RT-Lift RB-Release");
 //        telemetry.addData("Linear Slide(CAP=16.5k)", robot.linear.getCurrentPosition());
     }
 
@@ -49,6 +46,7 @@ public class SSRTeleop extends OpMode {
     }
 
     void driveControl() {
+        final double SLOWMODEPOWER = 0.6;
         //Driving and Joystick controls
         throttle = -1 * gamepad1.left_stick_y;
         rightThrottle = -1 * gamepad1.right_stick_y;
@@ -105,29 +103,23 @@ public class SSRTeleop extends OpMode {
         joy1.update(gamepad1);
 
         if (gamepad1.x) {
-            robot.beaconServo.setPosition(.22);
+            robot.beaconServo.setPosition(robot.beaconLeft);
         } else if (gamepad1.b) {
-            robot.beaconServo.setPosition(.98);
+            robot.beaconServo.setPosition(robot.beaconRight);
         } else if (gamepad1.a) {
-            robot.beaconServo.setPosition(.63);
+            robot.beaconServo.setPosition(robot.beaconMiddle);
         }
 
-        /*
+
         if (gamepad1.dpad_left) {
             robot.sweeper.setPower(0.03);
         } else if (joy1.toggle.y) {
-            robot.sweeper.setPower(-0.9);
+            robot.sweeper.setPower(-0.5);
         } else {
             robot.sweeper.setPower(0);
         }
 
-        /*if (joy1.toggle.dpad_down) {
-            robot.sweeper.setPower(-0.9);
-        } else {
-            robot.sweeper.setPower(0);
-        }*/
-        /*
-        if (gamepad1.left_trigger == 1) {
+        /* if (gamepad1.left_trigger == 1) {
             if (robot.linear.getCurrentPosition() > 0) {
                 robot.linear.setPower(-1);
             } else {
@@ -143,15 +135,25 @@ public class SSRTeleop extends OpMode {
             robot.linear.setPower(0);
         } */
 
+        if (gamepad1.left_trigger == 1) {
+            robot.linear.setPower(-1);
+        } else if (gamepad1.right_trigger == 1) {
+            robot.linear.setPower(1);
+        } else {
+            robot.linear.setPower(0);
+        }
+
         if (gamepad1.right_bumper) {
             doublePressRBumper++;
-            telemetry.addData("Double Bumper,", doublePressRBumper);
+            //telemetry.addData("Double Bumper,", doublePressRBumper);
             if (doublePressRBumper > 200) {
-                robot.releaseServo.setPosition(1);
+                if (robot.releaseServo.getPosition() < 0.9) {
+                    robot.releaseServo.setPosition(robot.releaseOpen);
+                } else {
+                    robot.releaseServo.setPosition(robot.releaseClosed);
+                }
                 doublePressRBumper = 0;
             }
-        } else {
-            robot.releaseServo.setPosition(.076);
         }
 
         if (gamepad1.dpad_up || gamepad2.dpad_up) {

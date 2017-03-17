@@ -34,15 +34,14 @@ public class MotorTest extends SSRAuto {
         telemetry.addData("PHASE 2-SERVOS", "CHECK TELEMETRY");
         telemetry.update();
 
-        robot.beaconServo.setPosition(0.98);
-        //robot.capServo.setPosition(0.45);
+        robot.beaconServo.setPosition(robot.beaconRight);
+        robot.releaseServo.setPosition(robot.releaseOpen);
         telemetry.addData("Servos", robot.beaconServo.getPosition() + ", "
                 );
         robotSleep(2000);
 
-        robot.beaconServo.setPosition(0.22);
-        //robot.capServo.setPosition(0.02);
-
+        robot.beaconServo.setPosition(robot.beaconLeft);
+        robot.releaseServo.setPosition(robot.releaseClosed);
         robotSleep(2000);
 
     }
@@ -54,6 +53,11 @@ public class MotorTest extends SSRAuto {
 
     @Override
     protected Boolean getRedAlliance() {
+        return false;
+    }
+
+    @Override
+    protected Boolean getCorner() {
         return false;
     }
 }
