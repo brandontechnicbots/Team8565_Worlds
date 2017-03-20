@@ -21,6 +21,8 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.CM;
+
 @TeleOp(name = "Calibration", group = "Iterative Opmode")
 public class sensorTest extends SSRTeleop {
     double whiteValue, matValue;
@@ -29,7 +31,8 @@ public class sensorTest extends SSRTeleop {
     public void init() {
         robot.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
-        robot.gyroSensor.calibrate();
+        //robot.gyroSensor.calibrate();
+
 
     }
 
@@ -37,6 +40,9 @@ public class sensorTest extends SSRTeleop {
     public void loop() {
         if (!robot.gyroSensor.isCalibrating()) {
             newDriveControl();
+            robot.rangeCache = robot.ultraSensorReader.read(robot.ULTRA_REG_START, robot.ULTRA_READ_LENGTH);
+            telemetry.addData("Ultra Sonic", robot.rangeCache[0] & 0xFF);
+
             telemetry.addData("Y=Set White", "A=Set Mat, X=Save to file");
             telemetry.addData("Color: Red, Blue", robot.colorSensor.red() + " " + robot.colorSensor.blue() + ", GYRO: " + robot.gyroSensor.getIntegratedZValue());
             telemetry.addData("Current ", robot.lightSensor.getLightDetected() + ", whiteValue" + Double.toString(whiteValue) + ", matValue: " + Double.toString(matValue));

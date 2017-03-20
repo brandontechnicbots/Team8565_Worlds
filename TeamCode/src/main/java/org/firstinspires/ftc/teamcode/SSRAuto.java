@@ -60,8 +60,8 @@ abstract public class SSRAuto extends LinearOpMode {
 
     private void navigateToBeacon() {
         if (getRedAlliance()) {
-            gyroTurn(34, 0, 1);
-            encoderGyroDrive(3300, 0.4); //go forward
+            gyroTurn(30, 0, 1);
+            encoderGyroDrive(3200, 0.4); //go forward
             gyroTurn(-26, 1, 0); //2nd turn
             encoderOnlyDrive(3200, 0.4, 0.4); //go forward into wall
             gyroTurn(-4);
@@ -140,15 +140,22 @@ abstract public class SSRAuto extends LinearOpMode {
     }
 
     void shootBalls() {
+        shootBalls(2);
+    }
+
+    void shootBalls(int balls) {
         robot.shooter.setPower(0.75); //turn on shooter
         robotSleep(600);
         robot.shooter.setPower(0);
-//        robot.sweeper.setPower(-0.9);
-        robotSleep(500); //pause between shots
-//        robot.sweeper.setPower(0);
-        robot.shooter.setPower(0.75);
-        robotSleep(600);
-        robot.shooter.setPower(0);
+        if (balls == 2) {
+            robot.valveServo.setPosition(robot.valveClose);
+            robotSleep(80);
+            robot.valveServo.setPosition(robot.valveOpen);
+            robotSleep(600);
+            robot.shooter.setPower(0.75);
+            robotSleep(600);
+            robot.shooter.setPower(0);
+        }
     }
 
     private void endNavigation() {
@@ -171,7 +178,7 @@ abstract public class SSRAuto extends LinearOpMode {
         } else {
             gyroTurn(60, 1, 0);
             gyroTurn(-46, 0, 1);
-            //shootBalls();
+            shootBalls();
             gyroTurn(-10, 1, 0);
             encoderGyroDrive(1800, 0.3);
         }
@@ -224,13 +231,18 @@ abstract public class SSRAuto extends LinearOpMode {
             //if (!opModeIsActive()) return; //Emergency Kill
             double error_degrees = target_angle - robot.gyroSensor.getIntegratedZValue(); //Compute Error
             double motor_output = robot.gyroTurnController.findCorrection(error_degrees); //Get Correction
-            motor_output = (motor_output > 0) ? Range.clip(motor_output, 0.3, 0.6) : Range.clip(motor_output, -0.6, -0.3);
+            //Log.e("cows", Double.toString(motor_output));
+            if (leftMultiplier == 0 || rightMultiplier == 0) {
+                motor_output = 1.7 * motor_output;
+                motor_output = (motor_output > 0) ? Range.clip(motor_output, 0.37, 0.6) : Range.clip(motor_output, -0.6, -0.37);
+            } else {
+                motor_output = (motor_output > 0) ? Range.clip(motor_output, 0.3, 0.6) : Range.clip(motor_output, -0.6, -0.3);
+            }
             robot.leftMotor.setPower(-1 * motor_output * leftMultiplier);
             robot.rightMotor.setPower(motor_output * rightMultiplier);
             //Log.d("DEBUG_Gyro", Double.toString(robot.gyroSensor.getIntegratedZValue()));
         }
         robot.stopRobot();
-        return;
     }
 
     void gyroTurn(double deg) {

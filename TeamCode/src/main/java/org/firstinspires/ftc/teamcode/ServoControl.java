@@ -25,7 +25,7 @@ public class ServoControl extends SSRTeleop {
 
     @Override
     public void loop() {
-        servoControl(robot.beaconServo);
+        servoControl(robot.valveServo);
         if (gamepad1.right_trigger == 1) {
             robot.linear.setPower(1);
         } else if (gamepad1.left_trigger == 1) {

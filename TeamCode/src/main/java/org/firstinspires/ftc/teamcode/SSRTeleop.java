@@ -2,8 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.CM;
 
 @TeleOp(name = "Teleop", group = "Iterative Opmode")  // @Autonomous(...) is the other common choice
 public class SSRTeleop extends OpMode {
@@ -13,6 +16,7 @@ public class SSRTeleop extends OpMode {
 
     double throttle, secondThrottle, secondRightThrottle, rightThrottle;
     private int doublePressRBumper = 0;
+    private int ultrasonicTimer, ultrasonicDistance, ultrasonicState = 0;
     Boolean slowMode = false;
 
     @Override
@@ -35,6 +39,7 @@ public class SSRTeleop extends OpMode {
     public void loop() {
         newDriveControl();
         buttonControl();
+        ballFeedControl();
         //telemetry.addData("Slow Mode(Hit X)", slowMode);
         telemetry.addData("Status", "Running: " + runtime.toString());
         telemetry.addData("Controls", "X,B,A-Beacon DpadL,Y-Sweeper LT,RT-Lift RB-Release");
@@ -98,6 +103,34 @@ public class SSRTeleop extends OpMode {
         telemetry.addData("Throttle(L,R)", robot.leftMotor.getPower() + ", " + robot.rightMotor.getPower());
     }
 
+    private void ballFeedControl() {
+        robot.rangeCache = robot.ultraSensorReader.read(robot.ULTRA_REG_START, robot.ULTRA_READ_LENGTH);
+        ultrasonicDistance = (robot.rangeCache[0] & 0xFF);
+
+        //telemetry.addData("US Value", ultrasonicDistance + "," + ultrasonicState);
+
+        if (ultrasonicState == 1) {//move forward
+            if (robot.valveServo.getPosition() == 0.5) {
+                ultrasonicState = 2;
+            } else {
+                robot.valveServo.setPosition(robot.valveServo.getPosition() - .125);
+            }
+        } else if (ultrasonicState == 2) {//reset
+            if (robot.valveServo.getPosition() == 1) {
+                ultrasonicState = 0;
+            } else {
+                robot.valveServo.setPosition(robot.valveServo.getPosition() + .125);
+            }
+        } else if (ultrasonicDistance < 10 || ultrasonicDistance > 14) {
+            robot.valveServo.setPosition(robot.valveOpen);
+            ultrasonicState = 0;
+        } else if (ultrasonicDistance > 9 && ultrasonicDistance <= 14) {
+            robot.valveServo.setPosition(robot.valveClose);
+            ultrasonicState = 1;
+        }
+    }
+
+
     private void buttonControl() {
 
         joy1.update(gamepad1);
@@ -114,10 +147,15 @@ public class SSRTeleop extends OpMode {
         if (gamepad1.dpad_left) {
             robot.sweeper.setPower(0.03);
         } else if (joy1.toggle.y) {
-            robot.sweeper.setPower(-0.5);
+            robot.sweeper.setPower(-0.4);
+        } else if (gamepad2.left_trigger > 0.5) {
+            robot.sweeper.setPower(0.03);
+        } else if (gamepad2.right_trigger > 0.5) {
+            robot.sweeper.setPower(-0.03);
         } else {
             robot.sweeper.setPower(0);
         }
+
 
         /* if (gamepad1.left_trigger == 1) {
             if (robot.linear.getCurrentPosition() > 0) {
@@ -143,18 +181,14 @@ public class SSRTeleop extends OpMode {
             robot.linear.setPower(0);
         }
 
-        if (gamepad1.right_bumper) {
-            doublePressRBumper++;
-            //telemetry.addData("Double Bumper,", doublePressRBumper);
-            if (doublePressRBumper > 200) {
-                if (robot.releaseServo.getPosition() < 0.9) {
-                    robot.releaseServo.setPosition(robot.releaseOpen);
-                } else {
-                    robot.releaseServo.setPosition(robot.releaseClosed);
-                }
-                doublePressRBumper = 0;
+        if (gamepad1.right_bumper && gamepad1.left_bumper) {
+            if (robot.releaseServo.getPosition() == robot.releaseClosed) {
+                robot.releaseServo.setPosition(robot.releaseOpen);
+            } else {
+                robot.releaseServo.setPosition(robot.releaseClosed);
             }
         }
+
 
         if (gamepad1.dpad_up || gamepad2.dpad_up) {
             robot.shooter.setPower(0.8);

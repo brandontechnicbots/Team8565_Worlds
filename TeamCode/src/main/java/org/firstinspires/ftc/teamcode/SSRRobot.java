@@ -3,10 +3,17 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import static com.qualcomm.robotcore.hardware.HardwareDevice.Manufacturer.ModernRobotics;
 
 /**
  * This is NOT an opmode.
@@ -15,21 +22,31 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 public class SSRRobot {
+    byte[] rangeCache;
+    I2cAddr ultraSensorAddress = new I2cAddr(0x14);
+
     /* Public OpMode members. */
     public DcMotor leftMotor, rightMotor, linear, shooter, sweeper = null;
-    public Servo beaconServo, releaseServo, leftCapServo, rightCapServo = null;
+    public Servo beaconServo, releaseServo, leftCapServo, rightCapServo, valveServo = null;
+    public I2cDevice ultraSensor = null;
+    public I2cDeviceSynch ultraSensorReader = null;
     public ModernRoboticsI2cGyro gyroSensor = null;
     public ModernRoboticsAnalogOpticalDistanceSensor lightSensor = null;
     public ModernRoboticsI2cColorSensor colorSensor = null;
+
     public PIDController gyroDriveController = new PIDController("Drive", 0.03, 0.0, 0, 0.8),
             gyroTurnController = new PIDController("Turn", 0.008, 0.0, 0.0, 0.8);
 
-    public static final double releaseOpen       =  1;  // positions for release servo
+    public static final double releaseOpen       =  .13;  // positions for release servo
     public static final double releaseClosed     =  .072;
+    public static final double valveOpen         =   1;
+    public static final double valveClose        =  .5;
     public static final double beaconLeft        =  .23;  // positions for beacon servo
     public static final double beaconMiddle      =  .63;
     public static final double beaconRight       =  .99;
 
+    public static final int ULTRA_REG_START = 0x04;
+    public static final int ULTRA_READ_LENGTH = 2;
 
 
 
@@ -85,10 +102,13 @@ public class SSRRobot {
         // Define and initialize ALL installed servos.
         beaconServo = hwMap.servo.get("beacon");
         releaseServo = hwMap.servo.get("release");
+        valveServo = hwMap.servo.get("valve");
+
         //leftCapServo = hwMap.servo.get("linear1");
         //rightCapServo = hwMap.servo.get("linear1");
         releaseServo.setPosition(releaseClosed);
         beaconServo.setPosition(beaconMiddle);
+        valveServo.setPosition(valveOpen);
         //leftCapServo.setPosition(0.02);
         //rightCapServo.setPosition(0.02);
 
@@ -96,8 +116,11 @@ public class SSRRobot {
         gyroSensor = (ModernRoboticsI2cGyro) hwMap.gyroSensor.get("gyro");
         lightSensor = (ModernRoboticsAnalogOpticalDistanceSensor) hwMap.opticalDistanceSensor.get("light");
         colorSensor = (ModernRoboticsI2cColorSensor) hwMap.colorSensor.get("color");
-
+        ultraSensor = hwMap.i2cDevice.get("ultra");
         colorSensor.enableLed(false);
+
+        ultraSensorReader = new I2cDeviceSynchImpl(ultraSensor, ultraSensorAddress, false);
+        ultraSensorReader.engage();
     }
 
     public void stopRobot() {

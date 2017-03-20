@@ -21,7 +21,6 @@ public class MotorTest extends SSRAuto {
         telemetry.addData("PHASE 1-Motors/Gyro", "CHECK TELEMETRY");
         telemetry.update();
         encoderGyroDrive(1500, 0.3);
-        insertGamepadBreakpont();
         encoderGyroDrive(1500, -0.3);
         insertGamepadBreakpont();
         gyroTurn(-90);
