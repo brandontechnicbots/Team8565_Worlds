@@ -130,7 +130,6 @@ public class SSRTeleop extends OpMode {
         }
     }
 
-
     private void buttonControl() {
 
         joy1.update(gamepad1);

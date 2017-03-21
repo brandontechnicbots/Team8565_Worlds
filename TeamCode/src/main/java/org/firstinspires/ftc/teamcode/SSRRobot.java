@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.Environment;
+import android.util.Log;
+
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
@@ -12,6 +15,11 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import static com.qualcomm.robotcore.hardware.HardwareDevice.Manufacturer.ModernRobotics;
 
@@ -38,7 +46,7 @@ public class SSRRobot {
             gyroTurnController = new PIDController("Turn", 0.008, 0.0, 0.0, 0.8);
 
     public static final double releaseOpen       =  .13;  // positions for release servo
-    public static final double releaseClosed     =  .072;
+    public static final double releaseClosed     =  .04;
     public static final double valveOpen         =   1;
     public static final double valveClose        =  .5;
     public static final double beaconLeft        =  .23;  // positions for beacon servo
@@ -47,7 +55,6 @@ public class SSRRobot {
 
     public static final int ULTRA_REG_START = 0x04;
     public static final int ULTRA_READ_LENGTH = 2;
-
 
 
     /* local OpMode members. */
@@ -128,6 +135,7 @@ public class SSRRobot {
         rightMotor.setPower(0);
         //sleep(500);
     }
+
 
 }
 

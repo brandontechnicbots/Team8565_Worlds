@@ -62,7 +62,7 @@ abstract public class SSRAuto extends LinearOpMode {
         if (getRedAlliance()) {
             gyroTurn(30, 0, 1);
             encoderGyroDrive(3200, 0.4); //go forward
-            gyroTurn(-26, 1, 0); //2nd turn
+            gyroTurn(-24, 1, 0); //2nd turn
             encoderOnlyDrive(3200, 0.4, 0.4); //go forward into wall
             gyroTurn(-4);
         } else {
@@ -97,7 +97,7 @@ abstract public class SSRAuto extends LinearOpMode {
         if (!getRedAlliance()) { //Compensation on blue only
             encoderGyroDrive(50, 0.3);
         } else { //Compensation on red only
-            encoderGyroDrive(230, 0.15);
+            encoderGyroDrive(165, 0.15);
         }
     }
 
@@ -107,7 +107,7 @@ abstract public class SSRAuto extends LinearOpMode {
             gyroTurn(-2.5, 0, 1);
             encoderOnlyDrive(800, -0.2, -0.25);
             detectLine();
-            encoderGyroDrive(10, 0.15);
+            encoderGyroDrive(100, 0.15);
 
         } else {
             encoderGyroDrive(50, 0.3); //just so we don't detect the same line twice
@@ -144,7 +144,8 @@ abstract public class SSRAuto extends LinearOpMode {
     }
 
     void shootBalls(int balls) {
-        robot.shooter.setPower(0.75); //turn on shooter
+        final double AUTO_SHOOTER_POWER = .6;
+        robot.shooter.setPower(AUTO_SHOOTER_POWER); //turn on shooter
         robotSleep(600);
         robot.shooter.setPower(0);
         if (balls == 2) {
@@ -152,7 +153,7 @@ abstract public class SSRAuto extends LinearOpMode {
             robotSleep(80);
             robot.valveServo.setPosition(robot.valveOpen);
             robotSleep(600);
-            robot.shooter.setPower(0.75);
+            robot.shooter.setPower(AUTO_SHOOTER_POWER);
             robotSleep(600);
             robot.shooter.setPower(0);
         }
@@ -162,25 +163,31 @@ abstract public class SSRAuto extends LinearOpMode {
         if (getRedAlliance()) {
             gyroTurn(27, 1, 0);
             encoderGyroDrive(1300, -0.4);
-            gyroTurn(17, 1, 0);
+            gyroTurn(19, 1, 0);
             shootBalls();
             if (getCorner()) {
                 gyroTurn(80);
                 encoderGyroDrive(1100, 0.4);
             } else {
-                gyroTurn(-80);
-                encoderGyroDrive(2300, 0.6);
-                encoderGyroDrive(400, -0.4);
+                gyroTurn(80);
+                encoderGyroDrive(1400, -0.6);
+                gyroTurn(25);
                 robotSleep(1000);
-                encoderGyroDrive(1000, 0.4);
+                gyroTurn(-25);
+                encoderGyroDrive(600, -0.4);
             }
 
         } else {
             gyroTurn(60, 1, 0);
-            gyroTurn(-46, 0, 1);
+            gyroTurn(-42, 0, 1);
             shootBalls();
-            gyroTurn(-10, 1, 0);
-            encoderGyroDrive(1800, 0.3);
+            if (getCorner()) {
+                gyroTurn(-10, 1, 0);
+                encoderGyroDrive(1800, 0.3);
+            } else {
+                gyroTurn(-90);
+                encoderGyroDrive(2400, 0.3);
+            }
         }
     }
 
