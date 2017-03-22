@@ -45,8 +45,8 @@ public class SSRRobot {
     public PIDController gyroDriveController = new PIDController("Drive", 0.03, 0.0, 0, 0.8),
             gyroTurnController = new PIDController("Turn", 0.008, 0.0, 0.0, 0.8);
 
-    public static final double releaseOpen       =  .13;  // positions for release servo
-    public static final double releaseClosed     =  .04;
+    public static final double releaseOpen       =  .4;  // positions for release servo
+    public static final double releaseClosed     =  .05;
     public static final double valveOpen         =   1;
     public static final double valveClose        =  .5;
     public static final double beaconLeft        =  .23;  // positions for beacon servo

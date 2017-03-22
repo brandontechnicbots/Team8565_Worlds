@@ -146,7 +146,7 @@ public class SSRTeleop extends OpMode {
         if (gamepad1.dpad_left) {
             robot.sweeper.setPower(0.03);
         } else if (joy1.toggle.y) {
-            robot.sweeper.setPower(-0.4);
+            robot.sweeper.setPower(-0.3);
         } else if (gamepad2.left_trigger > 0.5) {
             robot.sweeper.setPower(0.03);
         } else if (gamepad2.right_trigger > 0.5) {
