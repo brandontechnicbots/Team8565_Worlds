@@ -24,10 +24,12 @@ public class MotorTest extends SSRAuto {
         encoderGyroDrive(1500, -0.3);
         insertGamepadBreakpont();
         gyroTurn(-90);
-        insertGamepadBreakpont();
         gyroTurn(180);
+        gyroTurn(90);
         insertGamepadBreakpont();
-        gyroTurn(-90);
+        gyroTurn(-90,0,1);
+        insertGamepadBreakpont();
+        gyroTurn(90,1,0);
         insertGamepadBreakpont();
 
         telemetry.addData("PHASE 2-SERVOS", "CHECK TELEMETRY");

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Legacy;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "OnlyShoot_BlueRamp", group = "Linear Opmode")
+//@Autonomous(name = "OnlyShoot_BlueRamp", group = "Linear Opmode")
 public class OnlyShootAuto_BlueRamp extends OnlyShootAuto {
     @Override
     protected int getDelay() {
