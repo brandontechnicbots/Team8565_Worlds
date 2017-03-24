@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class SSRAuto_RedBeaconCorner extends SSRAuto {
     @Override
     protected int getDelay() {
-        return 0;
+        return 4000;
     }
 
     @Override

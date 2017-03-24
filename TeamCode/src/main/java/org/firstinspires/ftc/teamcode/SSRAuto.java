@@ -62,9 +62,10 @@ abstract public class SSRAuto extends LinearOpMode {
         if (getRedAlliance()) {
             gyroTurn(30, 0, 1);
             encoderGyroDrive(3200, 0.4); //go forward
-            gyroTurn(-21, 1, 0); //2nd turn
+            gyroTurn(-15, 1, 0); //2nd turn
             encoderOnlyDrive(3200, 0.4, 0.4); //go forward into wall
             gyroTurn(-4);
+            encoderOnlyDrive(300,-0.3,-0.3);
         } else {
             gyroTurn(-25, 0, 1);
             encoderGyroDrive(2900, -0.6);
@@ -73,6 +74,7 @@ abstract public class SSRAuto extends LinearOpMode {
             gyroTurn(5);
             encoderGyroDrive(400, -0.2);
             encoderOnlyDrive(1900, -0.3, -0.3); //add stall protection??
+            gyroTurn(3.5,0,1);
         }
 
     }
@@ -83,7 +85,7 @@ abstract public class SSRAuto extends LinearOpMode {
             robot.rightMotor.setPower(-0.20);
         } else {
             robot.leftMotor.setPower(0.13);
-            robot.rightMotor.setPower(0.17);
+            robot.rightMotor.setPower(0.18);
         }
         while (opModeIsActive()) {
             telemetry.addData("Light1", robot.lightSensor.getLightDetected());
@@ -95,7 +97,7 @@ abstract public class SSRAuto extends LinearOpMode {
         }
 
         if (!getRedAlliance()) { //Compensation on blue only
-            encoderGyroDrive(50, 0.3);
+            encoderGyroDrive(40, 0.3);
         } else { //Compensation on red only
             encoderGyroDrive(165, 0.15);
         }
@@ -134,7 +136,7 @@ abstract public class SSRAuto extends LinearOpMode {
             } else if (redTotal != blueTotal) {
                 robot.beaconServo.setPosition(robot.beaconLeft);
             }
-            robotSleep(400);
+            robotSleep(600);
             robot.beaconServo.setPosition(robot.beaconMiddle);
         }
     }
@@ -170,7 +172,7 @@ abstract public class SSRAuto extends LinearOpMode {
                 encoderGyroDrive(1100, 0.4);
             } else {
                 gyroTurn(80);
-                encoderGyroDrive(1400, -0.6);
+                encoderGyroDrive(1200, -0.4);
                 gyroTurn(25);
                 robotSleep(1000);
                 gyroTurn(-30);
@@ -179,14 +181,16 @@ abstract public class SSRAuto extends LinearOpMode {
 
         } else {
             gyroTurn(60, 1, 0);
-            gyroTurn(-42, 0, 1);
+            gyroTurn(-40, 0, 1);
             shootBalls();
             if (getCorner()) {
-                gyroTurn(-10, 1, 0);
-                encoderGyroDrive(2000, 0.3);
+                gyroTurn(-8, 1, 0);
+                encoderGyroDrive(2200, 0.3);
             } else {
                 gyroTurn(-82);
                 encoderGyroDrive(2400, 0.3);
+                robotSleep(1000);
+                encoderGyroDrive(100, 0.3);
             }
         }
     }
@@ -248,10 +252,10 @@ abstract public class SSRAuto extends LinearOpMode {
             robot.leftMotor.setPower(motor_output * leftMultiplier);
             robot.rightMotor.setPower(-1*motor_output * rightMultiplier);
             //Log.d("DEBUG_Gyro", Double.toString(robot.gyroSensor.getIntegratedZValue()));
-            telemetry.addData("Z:", robot.gyroSensor.getIntegratedZValue());
-            telemetry.addData("ERROR:", error_degrees);
-            telemetry.addData("MO:", motor_output);
-            telemetry.update();
+            //telemetry.addData("Z:", robot.gyroSensor.getIntegratedZValue());
+            //telemetry.addData("ERROR:", error_degrees);
+            //telemetry.addData("MO:", motor_output);
+            //telemetry.update();
         }
         robot.stopRobot();
     }
