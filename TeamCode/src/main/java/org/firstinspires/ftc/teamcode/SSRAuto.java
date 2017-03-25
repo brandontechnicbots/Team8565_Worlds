@@ -62,10 +62,10 @@ abstract public class SSRAuto extends LinearOpMode {
         if (getRedAlliance()) {
             gyroTurn(30, 0, 1);
             encoderGyroDrive(3200, 0.4); //go forward
-            gyroTurn(-15, 1, 0); //2nd turn
-            encoderOnlyDrive(3200, 0.4, 0.4); //go forward into wall
+            gyroTurn(-13, 1, 0); //2nd turn
+            encoderOnlyDrive(3300, 0.4, 0.4); //go forward into wall
             gyroTurn(-4);
-            encoderOnlyDrive(300,-0.3,-0.3);
+            encoderOnlyDrive(400,-0.3,-0.3);
         } else {
             gyroTurn(-25, 0, 1);
             encoderGyroDrive(2900, -0.6);
@@ -75,6 +75,7 @@ abstract public class SSRAuto extends LinearOpMode {
             encoderGyroDrive(400, -0.2);
             encoderOnlyDrive(1900, -0.3, -0.3); //add stall protection??
             gyroTurn(3.5,0,1);
+            encoderOnlyDrive(200, 0.3, 0.3);
         }
 
     }
@@ -148,7 +149,7 @@ abstract public class SSRAuto extends LinearOpMode {
     void shootBalls(int balls) {
         final double AUTO_SHOOTER_POWER = .6;
         robot.shooter.setPower(AUTO_SHOOTER_POWER); //turn on shooter
-        robotSleep(600);
+        robotSleep(800);
         robot.shooter.setPower(0);
         if (balls == 2) {
             robot.valveServo.setPosition(robot.valveClose);
@@ -181,7 +182,7 @@ abstract public class SSRAuto extends LinearOpMode {
 
         } else {
             gyroTurn(60, 1, 0);
-            gyroTurn(-40, 0, 1);
+            gyroTurn(-36, 0, 1);
             shootBalls();
             if (getCorner()) {
                 gyroTurn(-8, 1, 0);
