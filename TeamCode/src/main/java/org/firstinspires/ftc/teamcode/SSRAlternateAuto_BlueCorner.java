@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class SSRAlternateAuto_BlueCorner extends SSRAlternateAuto {
     @Override
     protected int getDelay() {
-        return 7000;
+        return 8000;
     }
 
     @Override
