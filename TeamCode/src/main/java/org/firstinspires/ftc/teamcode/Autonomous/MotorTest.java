@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name = "Motor Test", group = "Linear Opmode")
-public class MotorTest extends SSRAuto {
+public class MotorTest extends BaseAutonomous {
 
     @Override
     public void runOpMode() {

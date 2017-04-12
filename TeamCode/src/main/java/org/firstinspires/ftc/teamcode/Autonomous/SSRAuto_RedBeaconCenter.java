@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "RedShootOnlyCenter", group = "Linear Opmode")
-public class SSRAlternateAuto_RedCenter extends SSRAlternateAuto {
+@Autonomous(name = "RedBeaconCenter", group = "Main Auto")
+public class SSRAuto_RedBeaconCenter extends SSRAuto {
     @Override
     protected int getDelay() {
-        return 000;
+        return 500;
     }
 
     @Override

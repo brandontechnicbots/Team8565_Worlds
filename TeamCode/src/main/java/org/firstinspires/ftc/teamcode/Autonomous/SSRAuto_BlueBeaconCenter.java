@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "BlueBeaconCenter", group = "Linear Opmode")
+@Autonomous(name = "BlueBeaconCenter", group = "Main Auto")
 public class SSRAuto_BlueBeaconCenter extends SSRAuto {
     @Override
     protected int getDelay() {

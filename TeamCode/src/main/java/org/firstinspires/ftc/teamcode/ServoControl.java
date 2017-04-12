@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "Linear", group = "Iterative Opmode")
+@TeleOp(name = "Linear", group = "Testing")
 public class ServoControl extends SSRTeleop {
 
     @Override
@@ -25,7 +25,7 @@ public class ServoControl extends SSRTeleop {
 
     @Override
     public void loop() {
-        servoControl(robot.valveServo);
+        servoControl(robot.backSweeperServo);
         if (gamepad1.right_trigger == 1) {
             robot.linear.setPower(1);
         } else if (gamepad1.left_trigger == 1) {
