@@ -11,9 +11,10 @@
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 dependencies {
-//    compile project(':openCVLibrary310')
+    //    compile project(':openCVLibrary310')
     //This is importing awt from Samuel's computer, if any other computer sees this, he pushed to much
- //   compile files ('C:/Program Files (x86)/Java/jdk1.7.0_79/jre/lib/rt.jar')
+    //   compile files ('C:/Program Files (x86)/Java/jdk1.7.0_79/jre/lib/rt.jar')
+    //compile files('/home/brandon/FTC/Team8565/libs/Pathfinder-Java.jar')
 }
 
 android {

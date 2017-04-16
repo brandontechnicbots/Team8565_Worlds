@@ -55,13 +55,16 @@ abstract public class SSRAuto extends BaseAutonomous {
         } else {
             gyroTurn(-25, 0, 1);
             encoderGyroDrive(2900, -0.6);
-            gyroTurn(5); //do a rough curve
+            gyroTurn(12); //do a rough curve
             encoderGyroDrive(400, -0.6);
             gyroTurn(5);
-            encoderGyroDrive(400, -0.2);
-            encoderOnlyDrive(1900, -0.3, -0.3); //add stall protection??
+            encoderOnlyDrive(200, -0.2, -0.24); //slower into the wall just in case
+            encoderOnlyDrive(400, -0.3, -0.3);
+            detectLineForward();
+            robotSleep(getDelay());
+            encoderOnlyDrive(150, -0.3, -0.3); //add stall protection??
             gyroTurn(3.5, 0, 1);
-            encoderOnlyDrive(200, 0.3, 0.3);
+            //encoderOnlyDrive(200, 0.3, 0.3);
         }
 
     }
@@ -160,23 +163,22 @@ abstract public class SSRAuto extends BaseAutonomous {
                 gyroTurn(95);
                 encoderGyroDrive(1200, -0.4);
                 gyroTurn(-60);
-                encoderGyroDrive(100, -0.4);
+                encoderGyroDrive(250, -0.4);
             }
 
         } else { //blue side
             gyroTurn(63, 1, 0); //1st swt
             encoderGyroDrive(500,-0.3);
             gyroTurn(-26, 0, 1); //2nd swt
-            robotSleep(1000);
+            robotSleep(750);
             shootBalls();
             if (getCorner()) {
                 gyroTurn(-13, 1, 0);
                 encoderGyroDrive(2500, 0.3);
             } else {
                 gyroTurn(-82);
-                encoderGyroDrive(2400, 0.3);
-                robotSleep(1000);
-                encoderGyroDrive(100, 0.3);
+                encoderGyroDrive(1800, 0.3);
+                encoderOnlyDrive(500, 0.3, 0.4);
             }
         }
     }

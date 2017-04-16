@@ -33,21 +33,21 @@ abstract public class SSRAlternateAuto extends BaseAutonomous {
         robotSleep(getDelay()); //do we need delay
 
         navigateToBeacon();
-        robotSleep(500);
         shootBalls();
         endNavigation();
     }
 
     private void navigateToBeacon() {
         if (getRedAlliance()) {
-            encoderGyroDrive(270, 0.4); //forward
-            gyroTurn(67); //turn left
-            encoderGyroDrive(2100, 0.4);
+            encoderGyroDrive(670, 0.4); //forward
+            gyroTurn(71); //turn left
+            encoderGyroDrive(2450, 0.4);
         } else {
-            encoderGyroDrive(400, -0.4); //forward
-            gyroTurn(-62); //turn left
-            encoderGyroDrive(2100, -0.4);
+            encoderGyroDrive(900, -0.4); //forward
+            gyroTurn(-72); //turn left
+            encoderGyroDrive(1200, -0.4);
         }
+        robotSleep(500);
 
     }
 
@@ -57,12 +57,9 @@ abstract public class SSRAlternateAuto extends BaseAutonomous {
             if (getCorner()) {
                 encoderGyroDrive(2200, 0.3); //to ramp
             } else {
-                gyroTurn(87); //turn left
-                encoderGyroDrive(1600, -0.3);
-                gyroTurn(25);
-                robotSleep(1000);
-                gyroTurn(-30);
-                encoderGyroDrive(800, -0.4);
+                encoderGyroDrive(1650, -0.4);
+                gyroTurn(-40); //turn left
+                encoderGyroDrive(2400, 0.4);
             }
 
         } else {
@@ -70,9 +67,9 @@ abstract public class SSRAlternateAuto extends BaseAutonomous {
             if (getCorner()) {
                 encoderGyroDrive(2200, -0.3); //to ramp
             } else {
-                encoderGyroDrive(200, 0.3);
-                gyroTurn(87); //turn left
-                encoderGyroDrive(1500, -0.3);
+                encoderGyroDrive(2000, 0.3);
+                gyroTurn(33); //turn left
+                encoderGyroDrive(2400, -0.3);
             }
         }
     }

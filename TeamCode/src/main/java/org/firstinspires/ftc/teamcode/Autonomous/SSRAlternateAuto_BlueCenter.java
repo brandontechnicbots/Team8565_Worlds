@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "BlueShootOnlyCenter", group = "Alternate Auto")
+@Autonomous(name = "SHOOT ONLY: BlueCenter", group = "Alternate Auto")
 public class SSRAlternateAuto_BlueCenter extends SSRAlternateAuto {
     @Override
     protected int getDelay() {
