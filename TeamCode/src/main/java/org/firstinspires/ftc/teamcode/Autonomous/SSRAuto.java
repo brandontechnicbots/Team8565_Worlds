@@ -44,9 +44,9 @@ abstract public class SSRAuto extends BaseAutonomous {
     private void navigateToBeacon() {
         if (getRedAlliance()) {
             gyroTurn(30, 0, 1);
-            encoderGyroDrive(2700, 0.4); //go forward
-            gyroTurn(-17, 1, 0); //2nd turn
-            encoderOnlyDrive(2400, 0.4, 0.4); //go forward into wall
+            encoderGyroDrive(3400, 0.4); //go forward
+            gyroTurn(-16, 1, 0); //2nd turn
+            encoderOnlyDrive(1500, 0.4, 0.4); //go forward into wall
             detectLineForward();
             robotSleep(getDelay()); //do we need delay
             encoderOnlyDrive(200, 0.4, 0.4); //go forward into wall
@@ -117,7 +117,7 @@ abstract public class SSRAuto extends BaseAutonomous {
             gyroTurn(-2.5, 0, 1);
             encoderOnlyDrive(800, -0.2, -0.25);
             detectFirstLine();
-            encoderGyroDrive(60, 0.15);
+            encoderGyroDrive(40, 0.15);
 
         } else {
             encoderGyroDrive(50, 0.3); //just so we don't detect the same line twice
@@ -158,10 +158,12 @@ abstract public class SSRAuto extends BaseAutonomous {
             shootBalls();
             if (getCorner()) {
                 gyroTurn(78);
-                encoderGyroDrive(1400, 0.4);
+                encoderGyroDrive(1600, 0.4);
             } else {
                 gyroTurn(95);
-                encoderGyroDrive(1200, -0.4);
+                encoderGyroDrive(600, -0.4);
+                gyroTurn(60);
+                sleep(2000);
                 gyroTurn(-60);
                 encoderGyroDrive(250, -0.4);
             }
@@ -169,14 +171,14 @@ abstract public class SSRAuto extends BaseAutonomous {
         } else { //blue side
             gyroTurn(63, 1, 0); //1st swt
             encoderGyroDrive(500,-0.3);
-            gyroTurn(-26, 0, 1); //2nd swt
+            gyroTurn(-29, 0, 1); //2nd swt
             robotSleep(750);
             shootBalls();
             if (getCorner()) {
                 gyroTurn(-13, 1, 0);
                 encoderGyroDrive(2500, 0.3);
             } else {
-                gyroTurn(-82);
+                gyroTurn(-85);
                 encoderGyroDrive(1800, 0.3);
                 encoderOnlyDrive(500, 0.3, 0.4);
             }
