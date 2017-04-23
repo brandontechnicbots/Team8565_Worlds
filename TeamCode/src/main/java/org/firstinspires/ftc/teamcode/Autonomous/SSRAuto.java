@@ -59,7 +59,7 @@ abstract public class SSRAuto extends BaseAutonomous {
             encoderGyroDrive(400, -0.6);
             gyroTurn(5);
             encoderOnlyDrive(200, -0.2, -0.24); //slower into the wall just in case
-            encoderOnlyDrive(400, -0.3, -0.3);
+            encoderOnlyDrive(300, -0.3, -0.3);
             detectLineForward();
             robotSleep(getDelay());
             encoderOnlyDrive(150, -0.3, -0.3); //add stall protection??
@@ -71,8 +71,8 @@ abstract public class SSRAuto extends BaseAutonomous {
 
     private void detectLineForward() {
         if (getRedAlliance()) {
-            robot.leftMotor.setPower(0.25);
-            robot.rightMotor.setPower(0.25);
+            robot.leftMotor.setPower(0.22);
+            robot.rightMotor.setPower(0.24);
         } else {
             robot.leftMotor.setPower(-0.13);
             robot.rightMotor.setPower(-0.18);
@@ -165,7 +165,7 @@ abstract public class SSRAuto extends BaseAutonomous {
                 gyroTurn(60);
                 sleep(2000);
                 gyroTurn(-60);
-                encoderGyroDrive(250, -0.4);
+                encoderGyroDrive(400, -0.4);
             }
 
         } else { //blue side

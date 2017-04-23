@@ -32,6 +32,7 @@ abstract public class BaseAutonomous extends LinearOpMode {
         robot.shooter.setPower(AUTO_SHOOTER_POWER); //turn on shooter
         robotSleep(600);
         robot.shooter.setPower(0);
+        robotSleep(800);
         if (balls == 2) {
             robot.valveServo.setPosition(robot.valveClose); //let 2nd ball drop in
             robotSleep(150);

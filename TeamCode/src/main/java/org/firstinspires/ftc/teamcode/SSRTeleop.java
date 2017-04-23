@@ -165,12 +165,17 @@ public class SSRTeleop extends OpMode {
             robot.sweeper.setPower(-0.3);
             robot.backSweeperServo.setPosition(robot.backSweeperUp);
         } else if (gamepad2.left_trigger > 0.5) { //2nd joy LT-normal speed backward
-            robot.sweeper.setPower(0.03);
+            robot.sweeper.setPower(0.3);
+            robot.backSweeperServo.setPosition(robot.backSweeperUp);
         } else if (gamepad2.right_trigger > 0.5) { //2nd joy RT-normal speed forward
-            robot.sweeper.setPower(-0.03);
+            robot.sweeper.setPower(-0.3);
+            robot.backSweeperServo.setPosition(robot.backSweeperUp);
         } else if (gamepad1.dpad_right) { //1st joy dpad right- stop sweeper, put back plate down
             robot.backSweeperServo.setPosition(robot.backSweeperDown);
             robot.sweeper.setPower(0);
+        } else if (gamepad2.a) { 
+            robot.backSweeperServo.setPosition(robot.backSweeperUp);
+            robot.sweeper.setPower(-0.03);
         } else {
             robot.sweeper.setPower(0);
         }

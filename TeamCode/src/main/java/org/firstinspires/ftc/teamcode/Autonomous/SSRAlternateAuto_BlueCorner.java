@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "SHOOT ONLY: Blue Corner", group = "Alternate Auto")
+@Autonomous(name = "SHOOT ONLY: Blue CORNER", group = "Alternate Auto")
 public class SSRAlternateAuto_BlueCorner extends SSRAlternateAuto {
     @Override
     protected int getDelay() {
-        return 000;
+        return 15000;
     }
 
     @Override
