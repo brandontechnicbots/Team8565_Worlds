@@ -84,7 +84,6 @@ abstract public class BaseAutonomous extends LinearOpMode {
         if (robot.gyroSensor.isCalibrating()) //Bad
             return;
         robot.gyroSensor.resetZAxisIntegrator();
-
         double target_angle = robot.gyroSensor.getIntegratedZValue() - deg;//Set goal
         resetStartTime();//Safety Timer
 
