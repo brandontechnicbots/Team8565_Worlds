@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "Teleop", group = "Competition")  // @Autonomous(...) is the other common choice
-public class SSRTeleop extends OpMode {
+@TeleOp(name = "Presentation Teleop", group = "Competition")  // @Autonomous(...) is the other common choice
+public class YRFTeleop extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     SSRRobot robot = new SSRRobot(); // Get Robot Config.
     GamepadWrapper joy1 = new GamepadWrapper();
@@ -52,32 +52,13 @@ public class SSRTeleop extends OpMode {
     public void newDriveControl() {
         throttle = gamepad1.left_stick_y;
         rightThrottle = gamepad1.right_stick_y;
+        secondThrottle = gamepad2.left_stick_y;
+        secondRightThrottle = gamepad2.right_stick_y;
 
-        throttle = -(Math.signum(throttle) * ((Math.pow(throttle, 2) * (1 - .1)) + .1)) * .45;
-        rightThrottle = -(Math.signum(rightThrottle) * ((Math.pow(rightThrottle, 2) * (1 - .1)) + .1)) *.45 ;
-
-        //Dead zone
-        throttle = (Math.abs(throttle) < 0.1) ? 0 : throttle;
-        rightThrottle = (Math.abs(rightThrottle) < 0.1) ? 0 : rightThrottle;
-
-        //Clip at 1
-        throttle = Range.clip(throttle, -1, 1);
-        rightThrottle = Range.clip(rightThrottle, -1, 1);
-
-        robot.leftMotor.setPower(throttle);
-        robot.rightMotor.setPower(rightThrottle);
-        telemetry.addData("Throttle(L,R)", robot.leftMotor.getPower() + ", " + robot.rightMotor.getPower());
-    }
-
-    //Old Drive System control without fancy scaling
-    @Deprecated
-    void driveControl() {
-        final double SLOWMODEPOWER = 0.6;
-        //Driving and Joystick controls
-        throttle = -1 * gamepad1.left_stick_y;
-        rightThrottle = -1 * gamepad1.right_stick_y;
-        secondThrottle = -1 * gamepad2.left_stick_y;
-        secondRightThrottle = -1 * gamepad2.right_stick_y;
+        throttle = -(Math.signum(throttle) * ((Math.pow(throttle, 2) * (1 - .1)) + .1));
+        rightThrottle = -(Math.signum(rightThrottle) * ((Math.pow(rightThrottle, 2) * (1 - .1)) + .1));
+        secondThrottle = -(Math.signum(secondThrottle) * ((Math.pow(secondThrottle, 2) * (1 - .1)) + .1)) * .4;
+        secondRightThrottle = -(Math.signum(secondRightThrottle) * ((Math.pow(secondRightThrottle, 2) * (1 - .1)) + .1)) *.4;
 
         //Dead zone
         throttle = (Math.abs(throttle) < 0.1) ? 0 : throttle;
@@ -85,22 +66,20 @@ public class SSRTeleop extends OpMode {
         secondThrottle = (Math.abs(secondThrottle) < 0.1) ? 0 : secondThrottle;
         secondRightThrottle = (Math.abs(secondRightThrottle) < 0.1) ? 0 : secondRightThrottle;
 
-        //Slow Mode
-        if (slowMode) {
-            throttle = SLOWMODEPOWER * Math.signum(throttle);
-            rightThrottle = SLOWMODEPOWER * Math.signum(rightThrottle);
-            secondThrottle = SLOWMODEPOWER * Math.signum(secondThrottle);
-            secondRightThrottle = SLOWMODEPOWER * Math.signum(secondRightThrottle);
-        }
-
         //Clip at 1
         throttle = Range.clip(throttle, -1, 1);
         rightThrottle = Range.clip(rightThrottle, -1, 1);
         secondThrottle = Range.clip(secondThrottle, -1, 1);
         secondRightThrottle = Range.clip(secondRightThrottle, -1, 1);
 
-        robot.leftMotor.setPower(throttle);
-        robot.rightMotor.setPower(rightThrottle);
+        if (throttle != 0 || rightThrottle !=0) {
+            robot.leftMotor.setPower(throttle);
+            robot.rightMotor.setPower(rightThrottle);
+        } else {
+            robot.leftMotor.setPower(secondThrottle);
+            robot.rightMotor.setPower(secondRightThrottle);
+        }
+
         telemetry.addData("Throttle(L,R)", robot.leftMotor.getPower() + ", " + robot.rightMotor.getPower());
     }
 
@@ -165,17 +144,17 @@ public class SSRTeleop extends OpMode {
             robot.sweeper.setPower(-0.15);
             robot.backSweeperServo.setPosition(robot.backSweeperUp);
         } else if (gamepad2.left_trigger > 0.5) { //2nd joy LT-normal speed backward
-            robot.sweeper.setPower(0.3);
+            robot.sweeper.setPower(0.05);
             robot.backSweeperServo.setPosition(robot.backSweeperUp);
         } else if (gamepad2.right_trigger > 0.5) { //2nd joy RT-normal speed forward
-            robot.sweeper.setPower(-0.3);
+            robot.sweeper.setPower(-0.05);
             robot.backSweeperServo.setPosition(robot.backSweeperUp);
         } else if (gamepad1.dpad_right) { //1st joy dpad right- stop sweeper, put back plate down
             robot.backSweeperServo.setPosition(robot.backSweeperDown);
             robot.sweeper.setPower(0);
         } else if (gamepad2.a) { 
-            robot.backSweeperServo.setPosition(robot.backSweeperUp);
-            robot.sweeper.setPower(-0.03);
+            //robot.backSweeperServo.setPosition(robot.backSweeperUp);
+            //robot.sweeper.setPower(-0.03);
         } else {
             robot.sweeper.setPower(0);
         }
